@@ -1,4 +1,6 @@
 class ChessPiece {
+    static count = 0;
+
     /**
      * @constructor
      * @param {string} icon
@@ -11,10 +13,13 @@ class ChessPiece {
             throw new Error('Cannot instantiate abstract class ChessPiece');
         }
 
+        this.id = ChessPiece.count;
         this.icon = icon;
         this.color = color;
         this.row = row;
         this.col = col;
+
+        ChessPiece.count++;
     }
 
     /**

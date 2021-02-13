@@ -31,7 +31,7 @@ class ChessGameUI extends React.Component {
                 <ChessBoardUI />
                 {
                     chessPieces.map(piece =>
-                        <ChessPieceUI piece={piece} />
+                        <ChessPieceUI piece={piece} key={`chess-piece${piece.id}`} />
                     )
                 }
             </div>
