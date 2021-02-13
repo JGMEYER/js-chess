@@ -2,11 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import './index.css';
-import App from './App';
+import ChessGame from './Components/ChessGame/ChessGame';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <ChessGame />
   </React.StrictMode>,
   document.getElementById('root')
 );
