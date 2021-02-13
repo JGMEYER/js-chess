@@ -39,6 +39,37 @@ class ChessPiece {
     }
 
     /**
+     * Helper function for finding valid moves along a line, i.e orthogonally
+     * or on a diagonal.
+     * @param {ChessBoardState} chessBoardState
+     * @param {number} rowInc row increment
+     * @param {number} colInc col increment
+     */
+    _validMovesAlongLine(chessBoardState, rowInc, colInc) {
+        const validMoves = [];
+
+        let pieceAtTarget = null;
+        let row = this.row + rowInc;
+        let col = this.col + colInc;
+
+        while (row >= 0 && row <= 7 && col >= 0 && col <= 7) {
+            pieceAtTarget = chessBoardState.get(row, col);
+            if (pieceAtTarget) {
+                if (pieceAtTarget.isEnemyOf(this.color)) {
+                    validMoves.push([row, col]);
+                }
+                break;
+            } else {
+                validMoves.push([row, col]);
+            }
+            row += rowInc;
+            col += colInc;
+        }
+
+        return validMoves;
+    }
+
+    /**
      * Returns a set of valid moves for the ChessPiece.
      * @param {ChessBoardState} chessBoardState
      * @returns {Array<Array<number>>} array of valid move coordinates.
