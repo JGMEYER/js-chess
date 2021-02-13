@@ -21,6 +21,15 @@ class ChessBoardState {
     }
 
     /**
+     * Returns the piece at (row, col).
+     * @param {number} row
+     * @param {number} col
+     */
+    get(row, col) {
+        return this.board[row][col];
+    }
+
+    /**
      * Reset the game board.
      */
     reset() {
@@ -43,7 +52,7 @@ class ChessBoardState {
      * @param {number} r2 row2
      * @param {number} c2 col2
      */
-    move(r1, c1, r2, c2) {
+    movePiece(r1, c1, r2, c2) {
         const pieceToMove = this.board[r1][c1]
         this.board[r2][c2] = pieceToMove;
         this.board[r1][c1] = null;

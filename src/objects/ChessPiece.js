@@ -1,3 +1,9 @@
+import ChessBoardState from './ChessBoardState';
+import Color from '../utils/color';
+
+/**
+ * A chess piece on the game board.
+ */
 class ChessPiece {
     static count = 0;
 
@@ -34,10 +40,19 @@ class ChessPiece {
 
     /**
      * Returns a set of valid moves for the ChessPiece.
+     * @param {ChessBoardState} chessBoardState
      * @returns {Array<Array<number>} array of valid move coordinates.
      */
-    validMoves() {
+    validMoves(chessBoardState) {
         throw new Error('Method validMoves() must be implemented.');
+    }
+
+    /**
+     * Returns whether piece belongs to opponent of this piece's color.
+     * @param {Color} color
+     */
+    isEnemyOf(color) {
+        return color !== this.color;
     }
 }
 

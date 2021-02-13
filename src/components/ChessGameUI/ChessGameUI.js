@@ -6,7 +6,9 @@ import React from 'react';
 
 import ChessBoardUI from '../ChessBoardUI/ChessBoardUI';
 import ChessPieceUI from '../ChessPieceUI/ChessPieceUI';
+import ValidMovesUI from '../ValidMovesUI/ValidMovesUI';
 import ChessBoardState from '../../objects/ChessBoardState';
+import ChessPiece from '../../objects/ChessPiece';
 
 class ChessGameUI extends React.Component {
 
@@ -18,7 +20,55 @@ class ChessGameUI extends React.Component {
 
         this.state = {
             chessBoardState: chessBoardState,
+            selectedPiece: null,
         }
+
+        this.selectPiece = this.selectPiece.bind(this);
+        this.movePiece = this.movePiece.bind(this);
+    }
+
+    /**
+     * Select chess piece for movement.
+     * @param {ChessPiece} piece
+     */
+    selectPiece(piece) {
+        this.setState(prev => ({
+            ...prev,
+            selectedPiece: piece,
+        }));
+    }
+
+    /**
+     * Move selected piece if move is valid.
+     * @param {number} row
+     * @param {number} col
+     */
+    movePiece(row, col) {
+        if (!this.state.selectedPiece) {
+            console.log('No piece selected');
+            return;
+        }
+
+        const validMoves = this.state.selectedPiece.validMoves(
+            this.state.chessBoardState
+        )
+        const isValid = validMoves.filter(move =>
+            move[0] === row && move[1] === col).length > 0;
+        if (isValid) {
+            this.state.chessBoardState.movePiece(
+                this.state.selectedPiece.row,
+                this.state.selectedPiece.col,
+                row,
+                col,
+            );
+        } else {
+            console.log('Invalid move');
+        }
+
+        this.setState(prev => ({
+            ...prev,
+            selectedPiece: null,
+        }));
     }
 
     /**
@@ -28,11 +78,25 @@ class ChessGameUI extends React.Component {
         const chessPieces = this.state.chessBoardState.getPieces();
         return (
             <div>
-                <ChessBoardUI />
+                <ChessBoardUI movePiece={this.movePiece} />
                 {
                     chessPieces.map(piece =>
-                        <ChessPieceUI piece={piece} key={`chess-piece${piece.id}`} />
+                        <ChessPieceUI
+                            key={`chess-piece${piece.id}`}
+                            piece={piece}
+                            selectPiece={() => this.selectPiece(piece)} />
                     )
+                }
+                {
+                    this.state.selectedPiece
+                        ? <ValidMovesUI
+                            validMoves={
+                                this.state.selectedPiece.validMoves(
+                                    this.state.chessBoardState
+                                )
+                            }
+                            movePiece={this.movePiece} />
+                        : <div></div>
                 }
             </div>
         );

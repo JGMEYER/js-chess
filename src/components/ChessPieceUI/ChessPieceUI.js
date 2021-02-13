@@ -9,10 +9,16 @@ import './ChessPieceUI.css';
 class ChessPieceUI extends React.Component {
     constructor(props) {
         super(props);
+
+        this.handleOnClick = this.handleOnClick.bind(this);
+    }
+
+    handleOnClick() {
+        this.props.selectPiece();
     }
 
     /**
-     * Render ChessPiece
+     * Render ChessPiece.
      */
     render() {
         return (
@@ -21,7 +27,8 @@ class ChessPieceUI extends React.Component {
                 style={{
                     top: `${this.props.piece.row * 50}px`,
                     left: `${this.props.piece.col * 50}px`,
-                }}>
+                }}
+                onClick={this.handleOnClick} >
                 {this.props.piece.icon}
             </div>
         );
@@ -30,6 +37,7 @@ class ChessPieceUI extends React.Component {
 
 ChessPieceUI.propTypes = {
     piece: PropTypes.object.isRequired,
+    selectPiece: PropTypes.func.isRequired,
 }
 
 export default ChessPieceUI;
