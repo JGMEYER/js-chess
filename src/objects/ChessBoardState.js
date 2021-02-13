@@ -1,3 +1,4 @@
+import Bishop from './Bishop';
 import Pawn from './Pawn';
 import Color from '../utils/color';
 
@@ -34,14 +35,14 @@ class ChessBoardState {
      */
     reset() {
         this.board = [
-            [null, null, null, null, null, null, null, null],
+            [null, null, new Bishop(Color.BLACK, 0, 2), null, null, new Bishop(Color.BLACK, 0, 5), null, null],
             [new Pawn(Color.BLACK, 1, 0), new Pawn(Color.BLACK, 1, 1), new Pawn(Color.BLACK, 1, 2), new Pawn(Color.BLACK, 1, 3), new Pawn(Color.BLACK, 1, 4), new Pawn(Color.BLACK, 1, 5), new Pawn(Color.BLACK, 1, 6), new Pawn(Color.BLACK, 1, 7)],
             [null, null, null, null, null, null, null, null],
             [null, null, null, null, null, null, null, null],
             [null, null, null, null, null, null, null, null],
             [null, null, null, null, null, null, null, null],
             [new Pawn(Color.WHITE, 6, 0), new Pawn(Color.WHITE, 6, 1), new Pawn(Color.WHITE, 6, 2), new Pawn(Color.WHITE, 6, 3), new Pawn(Color.WHITE, 6, 4), new Pawn(Color.WHITE, 6, 5), new Pawn(Color.WHITE, 6, 6), new Pawn(Color.WHITE, 6, 7)],
-            [null, null, null, null, null, null, null, null],
+            [null, null, new Bishop(Color.WHITE, 7, 2), null, null, new Bishop(Color.WHITE, 7, 5), null, null],
         ]
     }
 

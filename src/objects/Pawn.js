@@ -1,3 +1,4 @@
+import ChessBoardState from './ChessBoardState';
 import ChessPiece from './ChessPiece';
 import Color from '../utils/color';
 
@@ -20,9 +21,9 @@ class Pawn extends ChessPiece {
     }
 
     /**
-     * Returns a set of valid moves for the Pawn.
+     * Returns an array of valid moves for the Pawn.
      * @param {ChessBoardState} chessBoardState
-     * @returns {Array<Array<number>} array of valid move coordinates.
+     * @returns {Array<Array<number>>} array of valid move coordinates.
      */
     validMoves(chessBoardState) {
         const validMoves = [];

@@ -41,7 +41,7 @@ class ChessPiece {
     /**
      * Returns a set of valid moves for the ChessPiece.
      * @param {ChessBoardState} chessBoardState
-     * @returns {Array<Array<number>} array of valid move coordinates.
+     * @returns {Array<Array<number>>} array of valid move coordinates.
      */
     validMoves(chessBoardState) {
         throw new Error('Method validMoves() must be implemented.');
