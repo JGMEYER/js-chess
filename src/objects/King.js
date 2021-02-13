@@ -1,28 +1,28 @@
-import ChessBoardState from "./ChessBoardState";
-import ChessPiece from "./ChessPiece";
-import Color from "../utils/color";
+import ChessBoardState from './ChessBoardState';
+import ChessPiece from './ChessPiece';
+import Color from '../utils/color';
 
-class Knight extends ChessPiece {
+class King extends ChessPiece {
     constructor(color, row, col) {
-        const icon = color === Color.WHITE ? '♘' : '♞';
+        const icon = color === Color.WHITE ? '♔' : '♚';
         super(icon, color, row, col);
     }
 
     /**
-     * Returns an array of valid moves for the Bishop.
+     * Returns an array of valid moves for the King.
      * @param {ChessBoardState} chessBoardState
      * @returns {Array<Array<number>>} array of valid move coordinates.
      */
     validMoves(chessBoardState) {
         const possibleMoves = [
-            [this.row - 2, this.col - 1],
-            [this.row - 2, this.col + 1],
-            [this.row - 1, this.col + 2],
-            [this.row + 1, this.col + 2],
-            [this.row + 2, this.col + 1],
-            [this.row + 2, this.col - 1],
-            [this.row + 1, this.col - 2],
-            [this.row - 1, this.col - 2],
+            [this.row - 1, this.col],
+            [this.row - 1, this.col + 1],
+            [this.row, this.col + 1],
+            [this.row + 1, this.col + 1],
+            [this.row + 1, this.col],
+            [this.row + 1, this.col - 1],
+            [this.row, this.col - 1],
+            [this.row - 1, this.col - 1],
         ];
 
         let pieceAtTarget = null;
@@ -45,4 +45,4 @@ class Knight extends ChessPiece {
     }
 }
 
-export default Knight;
+export default King;

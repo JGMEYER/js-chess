@@ -9,7 +9,7 @@ class Queen extends ChessPiece {
     }
 
     /**
-     * Returns an array of valid moves for the Bishop.
+     * Returns an array of valid moves for the Queen.
      * @param {ChessBoardState} chessBoardState
      * @returns {Array<Array<number>>} array of valid move coordinates.
      */
