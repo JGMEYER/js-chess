@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import './index.css';
-import ChessGame from './Components/ChessGame/ChessGame';
+import ChessGame from './components/ChessGameUI/ChessGameUI';
 
 ReactDOM.render(
   <React.StrictMode>
