@@ -1,10 +1,12 @@
+import { cloneDeep } from 'lodash';
+
 import Bishop from './Bishop';
 import Knight from './Knight';
 import Pawn from './Pawn';
 import Rook from './Rook';
-import Color from '../utils/color';
 import Queen from './Queen';
 import King from './King';
+import Color from '../utils/color';
 
 /**
  * Handles the state of the chess board and its pieces.
@@ -65,6 +67,47 @@ class ChessBoardState {
     }
 
     /**
+     * Returns whether king of given color is currently in check.
+     * @param {Color} color
+     */
+    kingInCheck(color) {
+        const king = this.getPiecesFor(color).filter(
+            piece => piece instanceof King
+        )[0];
+        const enemyPieces = this.getPiecesFor(
+            color === Color.WHITE ? Color.BLACK : Color.WHITE
+        );
+
+        for (let i = 0; i < enemyPieces.length; i++) {
+            const enemyPiece = enemyPieces[i];
+            const validMoves = enemyPiece.validMoves(this);
+            const validMovesOnKing = validMoves.filter(
+                move => move[0] === king.row && move[1] === king.col
+            )
+            if (validMovesOnKing.length > 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns whether king of given color would be in check after the given
+     * move.
+     * @param {Color} color
+     * @param {number} r1 row1
+     * @param {number} c1 col1
+     * @param {number} r2 row2
+     * @param {number} c2 col2
+     */
+    kingWouldBeInCheck(color, r1, c1, r2, c2) {
+        const cloneState = cloneDeep(this);
+        cloneState.movePiece(r1, c1, r2, c2);
+        return cloneState.kingInCheck(color);
+    }
+
+    /**
      * Returns an array of all pieces on the board.
      */
     getPieces() {
@@ -72,6 +115,22 @@ class ChessBoardState {
         this.board.forEach(row => {
             row.forEach(piece => {
                 if (piece !== null) {
+                    chessPieces.push(piece);
+                }
+            });
+        });
+        return chessPieces;
+    }
+
+    /**
+     * Returns an array of all pieces on the board for the given color.
+     * @param {Color} color
+     */
+    getPiecesFor(color) {
+        const chessPieces = [];
+        this.board.forEach(row => {
+            row.forEach(piece => {
+                if (piece !== null && piece.color === color) {
                     chessPieces.push(piece);
                 }
             });
