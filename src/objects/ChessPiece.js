@@ -44,8 +44,9 @@ class ChessPiece {
      * @param {ChessBoardState} chessBoardState
      * @param {number} rowInc row increment
      * @param {number} colInc col increment
+     * @param {boolean} checkIfKingInCheck helps prevent recursion
      */
-    _validMovesAlongLine(chessBoardState, rowInc, colInc) {
+    _validMovesAlongLine(chessBoardState, rowInc, colInc, checkIfKingInCheck) {
         const validMoves = [];
 
         let pieceAtTarget = null;
@@ -54,6 +55,10 @@ class ChessPiece {
 
         while (row >= 0 && row <= 7 && col >= 0 && col <= 7) {
             pieceAtTarget = chessBoardState.get(row, col);
+            if (checkIfKingInCheck
+                && chessBoardState.kingWouldBeInCheck(this.color, this.row, this.col, row, col)) {
+                break;
+            }
             if (pieceAtTarget) {
                 if (pieceAtTarget.isEnemyOf(this.color)) {
                     validMoves.push([row, col]);
@@ -72,9 +77,10 @@ class ChessPiece {
     /**
      * Returns a set of valid moves for the ChessPiece.
      * @param {ChessBoardState} chessBoardState
+     * @param {boolean} checkIfKingInCheck helps prevent recursion
      * @returns {Array<Array<number>>} array of valid move coordinates.
      */
-    validMoves(chessBoardState) {
+    validMoves(chessBoardState, checkIfKingInCheck) {
         throw new Error('Method validMoves() must be implemented.');
     }
 

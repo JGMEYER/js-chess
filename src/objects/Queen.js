@@ -11,17 +11,18 @@ class Queen extends ChessPiece {
     /**
      * Returns an array of valid moves for the Queen.
      * @param {ChessBoardState} chessBoardState
+     * @param {boolean} checkIfKingInCheck helps prevent recursion
      * @returns {Array<Array<number>>} array of valid move coordinates.
      */
-    validMoves(chessBoardState) {
-        const upLeftMoves = this._validMovesAlongLine(chessBoardState, -1, -1);
-        const upRightMoves = this._validMovesAlongLine(chessBoardState, -1, 1);
-        const downLeftMoves = this._validMovesAlongLine(chessBoardState, 1, -1)
-        const downRightMoves = this._validMovesAlongLine(chessBoardState, 1, 1)
-        const upMoves = this._validMovesAlongLine(chessBoardState, -1, 0);
-        const rightMoves = this._validMovesAlongLine(chessBoardState, 0, 1);
-        const downMoves = this._validMovesAlongLine(chessBoardState, 1, 0)
-        const leftMoves = this._validMovesAlongLine(chessBoardState, 0, -1)
+    validMoves(chessBoardState, checkIfKingInCheck = true) {
+        const upLeftMoves = this._validMovesAlongLine(chessBoardState, -1, -1, checkIfKingInCheck);
+        const upRightMoves = this._validMovesAlongLine(chessBoardState, -1, 1, checkIfKingInCheck);
+        const downLeftMoves = this._validMovesAlongLine(chessBoardState, 1, -1, checkIfKingInCheck)
+        const downRightMoves = this._validMovesAlongLine(chessBoardState, 1, 1, checkIfKingInCheck)
+        const upMoves = this._validMovesAlongLine(chessBoardState, -1, 0, checkIfKingInCheck);
+        const rightMoves = this._validMovesAlongLine(chessBoardState, 0, 1, checkIfKingInCheck);
+        const downMoves = this._validMovesAlongLine(chessBoardState, 1, 0, checkIfKingInCheck)
+        const leftMoves = this._validMovesAlongLine(chessBoardState, 0, -1, checkIfKingInCheck)
         return [
             ...upMoves, ...rightMoves, ...downMoves, ...leftMoves,
             ...upLeftMoves, ...upRightMoves, ...downLeftMoves, ...downRightMoves

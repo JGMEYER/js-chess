@@ -11,9 +11,10 @@ class King extends ChessPiece {
     /**
      * Returns an array of valid moves for the King.
      * @param {ChessBoardState} chessBoardState
+     * @param {boolean} checkIfKingInCheck helps prevent recursion
      * @returns {Array<Array<number>>} array of valid move coordinates.
      */
-    validMoves(chessBoardState) {
+    validMoves(chessBoardState, checkIfKingInCheck = true) {
         const possibleMoves = [
             [this.row - 1, this.col],
             [this.row - 1, this.col + 1],
@@ -29,6 +30,10 @@ class King extends ChessPiece {
         const validMoves = possibleMoves.filter(move => {
             const [row, col] = move;
             if (row < 0 || row > 7 || col < 0 || col > 7) {
+                return false;
+            }
+            if (checkIfKingInCheck
+                && chessBoardState.kingWouldBeInCheck(this.color, this.row, this.col, row, col)) {
                 return false;
             }
             pieceAtTarget = chessBoardState.get(row, col)

@@ -71,6 +71,7 @@ class ChessBoardState {
      * @param {Color} color
      */
     kingInCheck(color) {
+        // TODO deep copy turns into objects, so no instance of 'King'
         const king = this.getPiecesFor(color).filter(
             piece => piece instanceof King
         )[0];
@@ -80,7 +81,7 @@ class ChessBoardState {
 
         for (let i = 0; i < enemyPieces.length; i++) {
             const enemyPiece = enemyPieces[i];
-            const validMoves = enemyPiece.validMoves(this);
+            const validMoves = enemyPiece.validMoves(this, false);
             const validMovesOnKing = validMoves.filter(
                 move => move[0] === king.row && move[1] === king.col
             )
