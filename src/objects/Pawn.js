@@ -25,7 +25,7 @@ class Pawn extends ChessPiece {
      * @param {ChessBoardState} chessBoardState
      * @returns {Array<Array<number>>} array of valid move coordinates.
      */
-    validMoves(chessBoardState) {
+    validMoves(chessBoardState, checkIfKingInCheck = true) {
         const validMoves = [];
 
         // Movement (1 space)
@@ -88,6 +88,14 @@ class Pawn extends ChessPiece {
                     validMoves.push([this.row + 1, this.col + 1])
                 }
             }
+        }
+
+        if (checkIfKingInCheck) {
+            return validMoves.filter(move =>
+                !chessBoardState.kingWouldBeInCheck(
+                    this.color, this.row, this.col, move[0], move[1]
+                )
+            );
         }
 
         return validMoves;

@@ -13,11 +13,11 @@ class Bishop extends ChessPiece {
      * @param {ChessBoardState} chessBoardState
      * @returns {Array<Array<number>>} array of valid move coordinates.
      */
-    validMoves(chessBoardState) {
-        const upLeftMoves = this._validMovesAlongLine(chessBoardState, -1, -1);
-        const upRightMoves = this._validMovesAlongLine(chessBoardState, -1, 1);
-        const downLeftMoves = this._validMovesAlongLine(chessBoardState, 1, -1)
-        const downRightMoves = this._validMovesAlongLine(chessBoardState, 1, 1)
+    validMoves(chessBoardState, checkIfKingInCheck = true) {
+        const upLeftMoves = this._validMovesAlongLine(chessBoardState, -1, -1, checkIfKingInCheck);
+        const upRightMoves = this._validMovesAlongLine(chessBoardState, -1, 1, checkIfKingInCheck);
+        const downLeftMoves = this._validMovesAlongLine(chessBoardState, 1, -1, checkIfKingInCheck)
+        const downRightMoves = this._validMovesAlongLine(chessBoardState, 1, 1, checkIfKingInCheck)
         return [...upLeftMoves, ...upRightMoves, ...downLeftMoves, ...downRightMoves];
     }
 }

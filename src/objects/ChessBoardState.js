@@ -13,7 +13,9 @@ import Color from '../utils/color';
  */
 class ChessBoardState {
     constructor(board) {
-        if (!board) {
+        if (board) {
+            this.board = board;
+        } else {
             this.board = [
                 [null, null, null, null, null, null, null, null],
                 [null, null, null, null, null, null, null, null],
@@ -71,7 +73,6 @@ class ChessBoardState {
      * @param {Color} color
      */
     kingInCheck(color) {
-        // TODO deep copy turns into objects, so no instance of 'King'
         const king = this.getPiecesFor(color).filter(
             piece => piece instanceof King
         )[0];
@@ -137,6 +138,21 @@ class ChessBoardState {
             });
         });
         return chessPieces;
+    }
+
+    /**
+     * Pretty print the board state to the console.
+     */
+    print() {
+        let rowStrings = [];
+        this.board.forEach(row => {
+            let rowString = '';
+            row.forEach(piece => {
+                rowString += piece === null ? '.' : piece.icon;
+            })
+            rowStrings.push(rowString);
+        })
+        console.log(rowStrings.join('\n'));
     }
 }
 

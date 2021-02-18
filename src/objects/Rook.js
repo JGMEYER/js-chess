@@ -13,11 +13,11 @@ class Rook extends ChessPiece {
      * @param {ChessBoardState} chessBoardState
      * @returns {Array<Array<number>>} array of valid move coordinates.
      */
-    validMoves(chessBoardState) {
-        const upMoves = this._validMovesAlongLine(chessBoardState, -1, 0);
-        const rightMoves = this._validMovesAlongLine(chessBoardState, 0, 1);
-        const downMoves = this._validMovesAlongLine(chessBoardState, 1, 0)
-        const leftMoves = this._validMovesAlongLine(chessBoardState, 0, -1)
+    validMoves(chessBoardState, checkIfKingInCheck = true) {
+        const upMoves = this._validMovesAlongLine(chessBoardState, -1, 0, checkIfKingInCheck);
+        const rightMoves = this._validMovesAlongLine(chessBoardState, 0, 1, checkIfKingInCheck);
+        const downMoves = this._validMovesAlongLine(chessBoardState, 1, 0, checkIfKingInCheck)
+        const leftMoves = this._validMovesAlongLine(chessBoardState, 0, -1, checkIfKingInCheck)
         return [...upMoves, ...rightMoves, ...downMoves, ...leftMoves];
     }
 }

@@ -55,14 +55,13 @@ class ChessPiece {
 
         while (row >= 0 && row <= 7 && col >= 0 && col <= 7) {
             pieceAtTarget = chessBoardState.get(row, col);
-            if (checkIfKingInCheck
-                && chessBoardState.kingWouldBeInCheck(this.color, this.row, this.col, row, col)) {
-                break;
-            }
             if (pieceAtTarget) {
                 if (pieceAtTarget.isEnemyOf(this.color)) {
                     validMoves.push([row, col]);
                 }
+                break;
+            } else if (checkIfKingInCheck
+                && chessBoardState.kingWouldBeInCheck(this.color, this.row, this.col, row, col)) {
                 break;
             } else {
                 validMoves.push([row, col]);
