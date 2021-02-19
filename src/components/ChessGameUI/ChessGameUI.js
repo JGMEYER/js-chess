@@ -30,10 +30,19 @@ class ChessGameUI extends React.Component {
      * @param {ChessPiece} piece
      */
     selectPiece(piece) {
-        this.setState(prev => ({
-            ...prev,
-            selectedPiece: piece,
-        }));
+        if (piece === this.state.selectedPiece) {
+            // Deselect piece
+            this.setState(prev => ({
+                ...prev,
+                selectedPiece: null,
+            }));
+        } else {
+            // Select piece
+            this.setState(prev => ({
+                ...prev,
+                selectedPiece: piece,
+            }));
+        }
     }
 
     /**
