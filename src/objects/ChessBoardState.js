@@ -97,6 +97,25 @@ class ChessBoardState {
     }
 
     /**
+     * Returns whether king of given color is currently in checkmate.
+     * @param {Color} color
+     * @returns {boolean} King in checkmate
+     */
+    kingInCheckmate(color) {
+        if (!this.kingInCheck(color)) {
+            return false;
+        }
+
+        const pieces = this.getPiecesFor(color);
+        const validMoves = [];
+        pieces.forEach(piece => {
+            validMoves.push(...piece.validMoves(this));
+        });
+
+        return validMoves.length === 0;
+    }
+
+    /**
      * Returns whether king of given color would be in check after the given
      * move.
      * @param {Color} color

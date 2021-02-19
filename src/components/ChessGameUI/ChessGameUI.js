@@ -6,6 +6,7 @@ import ValidMovesUI from '../ValidMovesUI/ValidMovesUI';
 import ChessBoardState from '../../objects/ChessBoardState';
 import ChessPiece from '../../objects/ChessPiece';
 import King from '../../objects/King';
+import Color from '../../utils/color';
 
 class ChessGameUI extends React.Component {
 
@@ -66,6 +67,9 @@ class ChessGameUI extends React.Component {
             ...prev,
             selectedPiece: null,
         }));
+
+        console.log('black', this.state.chessBoardState.kingInCheckmate(Color.BLACK));
+        console.log('white', this.state.chessBoardState.kingInCheckmate(Color.WHITE));
     }
 
     /**
