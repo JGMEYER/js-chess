@@ -19,6 +19,7 @@ class ChessGameUI extends React.Component {
         this.state = {
             chessBoardState: chessBoardState,
             selectedPiece: null,
+            currentPlayer: Color.WHITE,
         }
 
         this.selectPiece = this.selectPiece.bind(this);
@@ -37,11 +38,13 @@ class ChessGameUI extends React.Component {
                 selectedPiece: null,
             }));
         } else {
-            // Select piece
-            this.setState(prev => ({
-                ...prev,
-                selectedPiece: piece,
-            }));
+            if (piece.color === this.state.currentPlayer) {
+                // Select piece
+                this.setState(prev => ({
+                    ...prev,
+                    selectedPiece: piece,
+                }));
+            }
         }
     }
 
@@ -56,6 +59,8 @@ class ChessGameUI extends React.Component {
             return;
         }
 
+        let nextPlayer = this.state.currentPlayer;
+
         const validMoves = this.state.selectedPiece.validMoves(
             this.state.chessBoardState
         )
@@ -68,6 +73,10 @@ class ChessGameUI extends React.Component {
                 row,
                 col,
             );
+            nextPlayer =
+                this.state.currentPlayer === Color.WHITE
+                    ? Color.BLACK
+                    : Color.WHITE;
         } else {
             console.log('Invalid move');
         }
@@ -75,6 +84,7 @@ class ChessGameUI extends React.Component {
         this.setState(prev => ({
             ...prev,
             selectedPiece: null,
+            currentPlayer: nextPlayer,
         }));
 
         console.log('black', this.state.chessBoardState.kingInCheckmate(Color.BLACK));
