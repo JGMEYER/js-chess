@@ -19,3 +19,7 @@
     box-sizing: border-box;
     box-shadow: inset 0px 0px 0px 2px green;
 }
+
+.chess-piece.in-check {
+    background-color: #f55;
+}

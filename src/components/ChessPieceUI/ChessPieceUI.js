@@ -21,9 +21,14 @@ class ChessPieceUI extends React.Component {
      * Render ChessPiece.
      */
     render() {
+        let className = "chess-piece";
+        if (this.props.isInCheck) {
+            className += " in-check";
+        }
+
         return (
             <div
-                className="chess-piece"
+                className={className}
                 style={{
                     top: `${this.props.piece.row * 50}px`,
                     left: `${this.props.piece.col * 50}px`,
@@ -37,6 +42,7 @@ class ChessPieceUI extends React.Component {
 
 ChessPieceUI.propTypes = {
     piece: PropTypes.object.isRequired,
+    isInCheck: PropTypes.bool.isRequired,
     selectPiece: PropTypes.func.isRequired,
 }
 

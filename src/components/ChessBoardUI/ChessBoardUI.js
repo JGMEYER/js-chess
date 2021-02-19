@@ -1,8 +1,9 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import './ChessBoardUI.css';
 
-class ChessBoard extends React.Component {
+class ChessBoardUI extends React.Component {
     constructor(props) {
         super(props);
 
@@ -32,4 +33,8 @@ class ChessBoard extends React.Component {
     }
 }
 
-export default ChessBoard;
+ChessBoardUI.propTypes = {
+    movePiece: PropTypes.func.isRequired,
+}
+
+export default ChessBoardUI;

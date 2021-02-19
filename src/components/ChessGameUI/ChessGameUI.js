@@ -1,7 +1,3 @@
-/* Chess pieces */
-/* ♔♕♖♗♘♙ */
-/* ♚♛♜♝♞♟ */
-
 import React from 'react';
 
 import ChessBoardUI from '../ChessBoardUI/ChessBoardUI';
@@ -9,6 +5,7 @@ import ChessPieceUI from '../ChessPieceUI/ChessPieceUI';
 import ValidMovesUI from '../ValidMovesUI/ValidMovesUI';
 import ChessBoardState from '../../objects/ChessBoardState';
 import ChessPiece from '../../objects/ChessPiece';
+import King from '../../objects/King';
 
 class ChessGameUI extends React.Component {
 
@@ -84,6 +81,10 @@ class ChessGameUI extends React.Component {
                         <ChessPieceUI
                             key={`chess-piece${piece.id}`}
                             piece={piece}
+                            isInCheck={
+                                piece instanceof King
+                                && this.state.chessBoardState.kingInCheck(piece.color)
+                            }
                             selectPiece={() => this.selectPiece(piece)} />
                     )
                 }
