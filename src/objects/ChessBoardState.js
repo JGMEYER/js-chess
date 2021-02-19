@@ -6,6 +6,7 @@ import Pawn from './Pawn';
 import Rook from './Rook';
 import Queen from './Queen';
 import King from './King';
+import ChessPiece from './ChessPiece';
 import Color from '../utils/color';
 
 /**
@@ -71,6 +72,7 @@ class ChessBoardState {
     /**
      * Returns whether king of given color is currently in check.
      * @param {Color} color
+     * @returns {boolean} King currently in check
      */
     kingInCheck(color) {
         const king = this.getPiecesFor(color).filter(
@@ -102,6 +104,7 @@ class ChessBoardState {
      * @param {number} c1 col1
      * @param {number} r2 row2
      * @param {number} c2 col2
+     * @returns {boolean} King would be in check
      */
     kingWouldBeInCheck(color, r1, c1, r2, c2) {
         const cloneState = cloneDeep(this);
@@ -111,6 +114,7 @@ class ChessBoardState {
 
     /**
      * Returns an array of all pieces on the board.
+     * @returns {Array<ChessPiece>}
      */
     getPieces() {
         const chessPieces = [];
@@ -127,6 +131,7 @@ class ChessBoardState {
     /**
      * Returns an array of all pieces on the board for the given color.
      * @param {Color} color
+     * @returns {Array<ChessPiece>}
      */
     getPiecesFor(color) {
         const chessPieces = [];
