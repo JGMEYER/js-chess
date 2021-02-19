@@ -62,7 +62,7 @@ class ChessPiece {
                 break;
             } else if (checkIfKingInCheck
                 && chessBoardState.kingWouldBeInCheck(this.color, this.row, this.col, row, col)) {
-                break;
+                // do nothing
             } else {
                 validMoves.push([row, col]);
             }
