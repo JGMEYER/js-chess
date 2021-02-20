@@ -67,6 +67,14 @@ class ChessBoardState {
         this.board[r2][c2] = pieceToMove;
         this.board[r1][c1] = null;
         pieceToMove.move(r2, c2);
+
+        // Queen promotion
+        if (pieceToMove instanceof Pawn) {
+            if ((pieceToMove.color === Color.WHITE && pieceToMove.row === 0)
+                || (pieceToMove.color === Color.BLACK && pieceToMove.row === 7)) {
+                this.board[r2][c2] = new Queen(pieceToMove.color, r2, c2);
+            }
+        }
     }
 
     /**
