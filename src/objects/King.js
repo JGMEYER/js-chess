@@ -27,7 +27,7 @@ class King extends ChessPiece {
         let row = this.color === Color.WHITE ? 7 : 0;
         const leftMostPiece = chessBoardState.get(row, 0);
         // 2. Neither the king nor the chosen rook has previously moved
-        if (this.hasMoved || !leftMostPiece instanceof Rook || leftMostPiece.hasMoved) {
+        if (this.hasMoved || leftMostPiece === null || !leftMostPiece instanceof Rook || leftMostPiece.hasMoved) {
             return false;
         }
         // 3. There are no pieces between the king and the chosen rook
