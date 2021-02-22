@@ -1,5 +1,6 @@
 import ChessBoardState from './ChessBoardState';
 import ChessPiece from './ChessPiece';
+import Move from './Move';
 import Color from '../utils/color';
 
 class Pawn extends ChessPiece {
@@ -31,12 +32,12 @@ class Pawn extends ChessPiece {
         // Movement (1 space)
         if (this.color === Color.WHITE) {
             if (this.row > 0 && chessBoardState.get(this.row - 1, this.col) === null) {
-                validMoves.push([this.row - 1, this.col]);
+                validMoves.push(new Move([this.row, this.col], [this.row - 1, this.col]));
             }
         }
         else if (this.color === Color.BLACK) {
             if (this.row < 7 && chessBoardState.get(this.row + 1, this.col) === null) {
-                validMoves.push([this.row + 1, this.col]);
+                validMoves.push(new Move([this.row, this.col], [this.row + 1, this.col]));
             }
         }
 
@@ -46,13 +47,13 @@ class Pawn extends ChessPiece {
                 if (this.row > 1
                     && chessBoardState.get(this.row - 1, this.col) === null
                     && chessBoardState.get(this.row - 2, this.col) === null) {
-                    validMoves.push([this.row - 2, this.col]);
+                    validMoves.push(new Move([this.row, this.col], [this.row - 2, this.col]));
                 }
             } else if (this.color === Color.BLACK) {
                 if (this.row < 6
                     && chessBoardState.get(this.row + 1, this.col) === null
                     && chessBoardState.get(this.row + 2, this.col) === null) {
-                    validMoves.push([this.row + 2, this.col]);
+                    validMoves.push(new Move([this.row, this.col], [this.row + 2, this.col]));
                 }
             }
         }
@@ -63,14 +64,14 @@ class Pawn extends ChessPiece {
             if (this.row > 0 && this.col > 0) {
                 const topLeftPiece = chessBoardState.get(this.row - 1, this.col - 1);
                 if (topLeftPiece && topLeftPiece.isEnemyOf(this.color)) {
-                    validMoves.push([this.row - 1, this.col - 1]);
+                    validMoves.push(new Move([this.row, this.col], [this.row - 1, this.col - 1]));
                 }
             }
             // Top right
             if (this.row > 0 && this.col < 7) {
                 const topRightPiece = chessBoardState.get(this.row - 1, this.col + 1);
                 if (topRightPiece && topRightPiece.isEnemyOf(this.color)) {
-                    validMoves.push([this.row - 1, this.col + 1])
+                    validMoves.push(new Move([this.row, this.col], [this.row - 1, this.col + 1]));
                 }
             }
         } else if (this.color === Color.BLACK) {
@@ -78,23 +79,21 @@ class Pawn extends ChessPiece {
             if (this.row < 7 && this.col > 0) {
                 const bottomLeftPiece = chessBoardState.get(this.row + 1, this.col - 1);
                 if (bottomLeftPiece && bottomLeftPiece.isEnemyOf(this.color)) {
-                    validMoves.push([this.row + 1, this.col - 1]);
+                    validMoves.push(new Move([this.row, this.col], [this.row + 1, this.col - 1]));
                 }
             }
             // Bottom right
             if (this.row < 7 && this.col < 7) {
                 const bottomRightPiece = chessBoardState.get(this.row + 1, this.col + 1);
                 if (bottomRightPiece && bottomRightPiece.isEnemyOf(this.color)) {
-                    validMoves.push([this.row + 1, this.col + 1])
+                    validMoves.push(new Move([this.row, this.col], [this.row + 1, this.col + 1]));
                 }
             }
         }
 
         if (checkIfKingInCheck) {
             return validMoves.filter(move =>
-                !chessBoardState.kingWouldBeInCheck(
-                    this.color, this.row, this.col, move[0], move[1]
-                )
+                !chessBoardState.kingWouldBeInCheck(this.color, move)
             );
         }
 

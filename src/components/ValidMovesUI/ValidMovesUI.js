@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import './ValidMovesUI.css';
+import Move from '../../objects/Move';
 
 class ValidMovesUI extends React.Component {
     constructor(props) {
@@ -21,18 +22,21 @@ class ValidMovesUI extends React.Component {
         return (
             <div>
                 {
-                    this.props.validMoves.map((move, idx) =>
-                        <div
-                            key={`valid-move${idx}`}
-                            className="valid-move"
-                            style={{
-                                top: `${move[0] * 50}px`,
-                                left: `${move[1] * 50}px`,
-                            }}
-                            onClick={() => this.handleOnClick(move[0], move[1])}>
-                            •
-                    </div>
-                    )
+                    this.props.validMoves.map((move, idx) => {
+                        const [row, col] = move.coordsAEnd;
+                        return (
+                            <div
+                                key={`valid-move${idx}`}
+                                className="valid-move"
+                                style={{
+                                    top: `${row * 50}px`,
+                                    left: `${col * 50}px`,
+                                }}
+                                onClick={() => this.handleOnClick(row, col)}>
+                                •
+                            </div>
+                        );
+                    })
                 }
             </div>
         );
@@ -40,7 +44,14 @@ class ValidMovesUI extends React.Component {
 }
 
 ValidMovesUI.propTypes = {
-    validMoves: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)).isRequired,
+    validMoves: PropTypes.arrayOf(
+        PropTypes.shape({
+            coordsAStart: PropTypes.arrayOf(PropTypes.number),
+            coordsAEnd: PropTypes.arrayOf(PropTypes.number),
+            coordsBStart: PropTypes.arrayOf(PropTypes.number),
+            coordsBEnd: PropTypes.arrayOf(PropTypes.number),
+        })
+    ).isRequired,
     movePiece: PropTypes.func.isRequired,
 }
 

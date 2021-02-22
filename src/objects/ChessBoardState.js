@@ -7,6 +7,7 @@ import Rook from './Rook';
 import Queen from './Queen';
 import King from './King';
 import ChessPiece from './ChessPiece';
+import Move from './Move';
 import Color from '../utils/color';
 
 /**
@@ -56,24 +57,24 @@ class ChessBoardState {
     }
 
     /**
-     * Moves the piece at (r1, c1) to (r2, c2).
-     * @param {number} r1 row1
-     * @param {number} c1 col1
-     * @param {number} r2 row2
-     * @param {number} c2 col2
+     * Executes move
+     * @param {Move} move
      */
-    movePiece(r1, c1, r2, c2) {
-        const pieceToMove = this.board[r1][c1]
-        this.board[r2][c2] = pieceToMove;
-        this.board[r1][c1] = null;
-        pieceToMove.move(r2, c2);
+    move(move) {
+        const [aR1, aC1] = move.coordsAStart;
+        const [aR2, aC2] = move.coordsAEnd;
+        const pieceA = this.board[aR1][aC1];
+        this.board[aR2][aC2] = pieceA;
+        this.board[aR1][aC1] = null;
+        pieceA.move(aR2, aC2);
 
-        // Queen promotion
-        if (pieceToMove instanceof Pawn) {
-            if ((pieceToMove.color === Color.WHITE && pieceToMove.row === 0)
-                || (pieceToMove.color === Color.BLACK && pieceToMove.row === 7)) {
-                this.board[r2][c2] = new Queen(pieceToMove.color, r2, c2);
-            }
+        if (move.coordsBStart !== null && move.coordsBEnd !== null) {
+            const [bR1, bC1] = move.coordsBStart;
+            const [bR2, bC2] = move.coordsBEnd;
+            const pieceB = this.board[bR1][bC1];
+            this.board[bR2][bC2] = pieceB;
+            this.board[bR1][bC1] = null;
+            pieceB.move(bR2, bC2);
         }
     }
 
@@ -94,7 +95,7 @@ class ChessBoardState {
             const enemyPiece = enemyPieces[i];
             const validMoves = enemyPiece.validMoves(this, false);
             const validMovesOnKing = validMoves.filter(
-                move => move[0] === king.row && move[1] === king.col
+                move => move.coordsAEnd[0] === king.row && move.coordsAEnd[1] === king.col
             )
             if (validMovesOnKing.length > 0) {
                 return true;
@@ -133,9 +134,9 @@ class ChessBoardState {
      * @param {number} c2 col2
      * @returns {boolean} King would be in check
      */
-    kingWouldBeInCheck(color, r1, c1, r2, c2) {
+    kingWouldBeInCheck(color, move) {
         const cloneState = cloneDeep(this);
-        cloneState.movePiece(r1, c1, r2, c2);
+        move.execute(cloneState);
         return cloneState.kingInCheck(color);
     }
 
