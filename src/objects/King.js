@@ -22,6 +22,10 @@ class King extends ChessPiece {
         this.hasMoved = true;
     }
 
+    /**
+     * Returns whether king can queenside castle
+     * @param {ChessBoardState} chessBoardState
+     */
     canQueenSideCastle(chessBoardState) {
         // 1. The castling must be queenside
         let row = this.color === Color.WHITE ? 7 : 0;
@@ -47,7 +51,37 @@ class King extends ChessPiece {
             || chessBoardState.kingWouldBeInCheck(this.color, new Move([row, 4], [row, 2]))) {
             return false;
         }
+        return true;
+    }
 
+    /**
+     * Returns whether king can kingside castle
+     * @param {ChessBoardState} chessBoardState
+     */
+    canKingSideCastle(chessBoardState) {
+        // 1. The castling must be queenside
+        let row = this.color === Color.WHITE ? 7 : 0;
+        const rightMostPiece = chessBoardState.get(row, 7);
+        // 2. Neither the king nor the chosen rook has previously moved
+        if (this.hasMoved || rightMostPiece === null || !rightMostPiece instanceof Rook || rightMostPiece.hasMoved) {
+            return false;
+        }
+        // 3. There are no pieces between the king and the chosen rook
+        if (
+            chessBoardState.get(row, 5) !== null
+            || chessBoardState.get(row, 6) !== null
+        ) {
+            return false;
+        }
+        // 4. The king is not currently in check
+        if (chessBoardState.kingInCheck(this.color)) {
+            return false;
+        }
+        // 5/6. The king would not pass through check or end up in check
+        if (chessBoardState.kingWouldBeInCheck(this.color, new Move([row, 4], [row, 5]))
+            || chessBoardState.kingWouldBeInCheck(this.color, new Move([row, 4], [row, 6]))) {
+            return false;
+        }
         return true;
     }
 
@@ -91,6 +125,14 @@ class King extends ChessPiece {
             validMoves.push(new Move(
                 [row, 4], [row, 2], // king
                 [row, 0], [row, 3], // left rook
+            ));
+        }
+
+        if (this.canKingSideCastle(chessBoardState)) {
+            let row = this.color === Color.WHITE ? 7 : 0;
+            validMoves.push(new Move(
+                [row, 4], [row, 6], // king
+                [row, 7], [row, 5], // right rook
             ));
         }
 

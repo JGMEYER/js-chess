@@ -8,7 +8,7 @@ import Move from './Move';
 describe('King.js', () => {
 
     describe('validMoves()', () => {
-        test('white queen-side castle', () => {
+        test('white queenside castle', () => {
             const leftRook = new Rook(Color.WHITE, 7, 0);
             const king = new King(Color.WHITE, 7, 4);
             const rightRook = new Rook(Color.WHITE, 7, 7);
@@ -30,7 +30,7 @@ describe('King.js', () => {
             expect(board[7][3]).toEqual(leftRook);
         });
 
-        test('white king-side castle', () => {
+        test('white kingside castle', () => {
             const leftRook = new Rook(Color.WHITE, 7, 0);
             const king = new King(Color.WHITE, 7, 4);
             const rightRook = new Rook(Color.WHITE, 7, 7);
