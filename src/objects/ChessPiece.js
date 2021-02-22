@@ -1,5 +1,6 @@
 import ChessBoardState from './ChessBoardState';
 import Color from '../utils/color';
+import Move from './Move';
 
 /**
  * A chess piece on the game board.
@@ -50,21 +51,23 @@ class ChessPiece {
         const validMoves = [];
 
         let pieceAtTarget = null;
+        let move = null;
         let row = this.row + rowInc;
         let col = this.col + colInc;
 
         while (row >= 0 && row <= 7 && col >= 0 && col <= 7) {
             pieceAtTarget = chessBoardState.get(row, col);
+            move = new Move([this.row, this.col], [row, col])
             if (pieceAtTarget) {
                 if (pieceAtTarget.isEnemyOf(this.color)) {
-                    validMoves.push([row, col]);
+                    validMoves.push(move);
                 }
                 break;
             } else if (checkIfKingInCheck
-                && chessBoardState.kingWouldBeInCheck(this.color, this.row, this.col, row, col)) {
+                && chessBoardState.kingWouldBeInCheck(this.color, move)) {
                 // do nothing
             } else {
-                validMoves.push([row, col]);
+                validMoves.push(move);
             }
             row += rowInc;
             col += colInc;
