@@ -1,12 +1,54 @@
 import ChessBoardState from './ChessBoardState';
 import ChessPiece from './ChessPiece';
 import Move from './Move';
+import Rook from './ChessPiece';
 import Color from '../utils/color';
 
 class King extends ChessPiece {
     constructor(color, row, col) {
         const icon = color === Color.WHITE ? '♔' : '♚';
         super(icon, color, row, col);
+
+        this.hasMoved = false;
+    }
+
+    /**
+     * Move the King to the designated (row, col).
+     * @param {number} row
+     * @param {number} col
+     */
+    move(row, col) {
+        super.move(row, col);
+        this.hasMoved = true;
+    }
+
+    canQueenSideCastle(chessBoardState) {
+        // 1. The castling must be queenside
+        let row = this.color === Color.WHITE ? 7 : 0;
+        const leftMostPiece = chessBoardState.get(row, 0);
+        // 2. Neither the king nor the chosen rook has previously moved
+        if (this.hasMoved || !leftMostPiece instanceof Rook || leftMostPiece.hasMoved) {
+            return false;
+        }
+        // 3. There are no pieces between the king and the chosen rook
+        if (
+            chessBoardState.get(row, 1) !== null
+            || chessBoardState.get(row, 2) !== null
+            || chessBoardState.get(row, 3) !== null
+        ) {
+            return false;
+        }
+        // 4. The king is not currently in check
+        if (chessBoardState.kingInCheck(this.color)) {
+            return false;
+        }
+        // 5/6. The king would not pass through check or end up in check
+        if (chessBoardState.kingWouldBeInCheck(this.color, new Move([row, 4], [row, 3]))
+            || chessBoardState.kingWouldBeInCheck(this.color, new Move([row, 4], [row, 2]))) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -43,6 +85,14 @@ class King extends ChessPiece {
             }
             return false;
         });
+
+        if (this.canQueenSideCastle(chessBoardState)) {
+            let row = this.color === Color.WHITE ? 7 : 0;
+            validMoves.push(new Move(
+                [row, 4], [row, 2], // king
+                [row, 0], [row, 3], // left rook
+            ));
+        }
 
         if (checkIfKingInCheck) {
             return validMoves.filter(move =>

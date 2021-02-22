@@ -6,6 +6,18 @@ class Rook extends ChessPiece {
     constructor(color, row, col) {
         const icon = color === Color.WHITE ? '♖' : '♜';
         super(icon, color, row, col);
+
+        this.hasMoved = false;
+    }
+
+    /**
+     * Move the Rook to the designated (row, col).
+     * @param {number} row
+     * @param {number} col
+     */
+    move(row, col) {
+        super.move(row, col);
+        this.hasMoved = true;
     }
 
     /**
