@@ -51,6 +51,7 @@ class King extends ChessPiece {
             || chessBoardState.kingWouldBeInCheck(this.color, new Move([row, 4], [row, 2]))) {
             return false;
         }
+
         return true;
     }
 
@@ -82,6 +83,7 @@ class King extends ChessPiece {
             || chessBoardState.kingWouldBeInCheck(this.color, new Move([row, 4], [row, 6]))) {
             return false;
         }
+      
         return true;
     }
 

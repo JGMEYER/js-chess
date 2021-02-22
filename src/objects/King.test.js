@@ -29,7 +29,7 @@ describe('King.js', () => {
             expect(board[7][2]).toEqual(king);
             expect(board[7][3]).toEqual(leftRook);
         });
-
+      
         test('white kingside castle', () => {
             const leftRook = new Rook(Color.WHITE, 7, 0);
             const king = new King(Color.WHITE, 7, 4);
