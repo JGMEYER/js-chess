@@ -2,6 +2,7 @@ import ChessBoardState from './ChessBoardState';
 import ChessPiece from './ChessPiece';
 import Move from './Move';
 import Color from '../utils/color';
+import Queen from './Queen';
 
 class Pawn extends ChessPiece {
     constructor(color, row, col) {
@@ -90,6 +91,17 @@ class Pawn extends ChessPiece {
                 }
             }
         }
+
+        validMoves.forEach(move => {
+            move.execute = (chessBoardState) => {
+                chessBoardState.move(move);
+                // Queen promotion
+                const [row, col] = move.coordsAEnd;
+                if (row === 0 || row === 7) {
+                    chessBoardState.board[row][col] = new Queen(this.color, row, col);
+                }
+            }
+        });
 
         if (checkIfKingInCheck) {
             return validMoves.filter(move =>

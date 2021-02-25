@@ -67,7 +67,7 @@ class ChessGameUI extends React.Component {
         const move = validMoves.filter(move =>
             move.coordsAEnd[0] === row && move.coordsAEnd[1] === col)[0];
         if (move) {
-            this.state.chessBoardState.move(move);
+            move.execute(this.state.chessBoardState);
             nextPlayer =
                 this.state.currentPlayer === Color.WHITE
                     ? Color.BLACK
