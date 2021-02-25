@@ -83,7 +83,7 @@ class King extends ChessPiece {
             || chessBoardState.kingWouldBeInCheck(this.color, new Move([row, 4], [row, 6]))) {
             return false;
         }
-      
+
         return true;
     }
 
@@ -122,23 +122,23 @@ class King extends ChessPiece {
             return false;
         });
 
-        if (this.canQueenSideCastle(chessBoardState)) {
-            let row = this.color === Color.WHITE ? 7 : 0;
-            validMoves.push(new Move(
-                [row, 4], [row, 2], // king
-                [row, 0], [row, 3], // left rook
-            ));
-        }
-
-        if (this.canKingSideCastle(chessBoardState)) {
-            let row = this.color === Color.WHITE ? 7 : 0;
-            validMoves.push(new Move(
-                [row, 4], [row, 6], // king
-                [row, 7], [row, 5], // right rook
-            ));
-        }
-
         if (checkIfKingInCheck) {
+            if (this.canQueenSideCastle(chessBoardState)) {
+                let row = this.color === Color.WHITE ? 7 : 0;
+                validMoves.push(new Move(
+                    [row, 4], [row, 2], // king
+                    [row, 0], [row, 3], // left rook
+                ));
+            }
+
+            if (this.canKingSideCastle(chessBoardState)) {
+                let row = this.color === Color.WHITE ? 7 : 0;
+                validMoves.push(new Move(
+                    [row, 4], [row, 6], // king
+                    [row, 7], [row, 5], // right rook
+                ));
+            }
+
             return validMoves.filter(move =>
                 !chessBoardState.kingWouldBeInCheck(this.color, move)
             );
