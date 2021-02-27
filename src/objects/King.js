@@ -10,8 +10,6 @@ class King extends ChessPiece {
         const printIcon = color === Color.WHITE ? '♔' : '♚';
         const notation = color === Color.WHITE ? 'K' : 'k';
         super(icon, printIcon, notation, color, row, col);
-
-        this.hasMoved = false;
     }
 
     /**
@@ -21,7 +19,6 @@ class King extends ChessPiece {
      */
     move(row, col) {
         super.move(row, col);
-        this.hasMoved = true;
     }
 
     /**
@@ -29,9 +26,8 @@ class King extends ChessPiece {
      * @param {ChessBoardState} chessBoardState
      */
     queenSideCastleAvailable(chessBoardState) {
-        let row = this.color === Color.WHITE ? 7 : 0;
-        const leftMostPiece = chessBoardState.get(row, 0);
-        return !this.hasMoved && leftMostPiece !== null && leftMostPiece instanceof Rook && !leftMostPiece.hasMoved;
+        const codeToMatch = this.color === Color.WHITE ? 'Q' : 'q';
+        return chessBoardState.castleAvailable(codeToMatch);
     }
 
     /**
@@ -71,9 +67,8 @@ class King extends ChessPiece {
      * @param {ChessBoardState} chessBoardState
      */
     kingSideCastleAvailable(chessBoardState) {
-        let row = this.color === Color.WHITE ? 7 : 0;
-        const rightMostPiece = chessBoardState.get(row, 7);
-        return !this.hasMoved && rightMostPiece !== null && rightMostPiece instanceof Rook && !rightMostPiece.hasMoved;
+        const codeToMatch = this.color === Color.WHITE ? 'K' : 'k';
+        return chessBoardState.castleAvailable(codeToMatch);
     }
 
     /**
@@ -141,6 +136,19 @@ class King extends ChessPiece {
                 return true;
             }
             return false;
+        });
+
+        validMoves.forEach(move => {
+            move.execute = (chessBoardState) => {
+                if (this.color.WHITE) {
+                    chessBoardState.invalidateCastle('KQ');
+                } else if (this.color.BLACK) {
+                    chessBoardState.invalidateCastle('kq');
+                }
+
+                chessBoardState.move(move);
+                chessBoardState.enPassantTarget = '-';
+            }
         });
 
         if (checkIfKingInCheck) {

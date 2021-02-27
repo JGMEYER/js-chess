@@ -34,7 +34,6 @@ describe('ChessBoardState.js', () => {
                 [new Pawn(Color.WHITE, 6, 0), new Pawn(Color.WHITE, 6, 1), new Pawn(Color.WHITE, 6, 2), new Pawn(Color.WHITE, 6, 3), null, new Knight(Color.WHITE, 6, 5), null, new Pawn(Color.WHITE, 6, 7)],
                 [new Rook(Color.WHITE, 7, 0), null, new Bishop(Color.WHITE, 7, 2), null, new King(Color.WHITE, 7, 4), null, null, new Rook(Color.WHITE, 7, 7)],
             ];
-            board[7][7].hasMoved = true; // invalidate white king side castle
             board.forEach(rank => {
                 rank.forEach(piece => {
                     if (piece !== null) {

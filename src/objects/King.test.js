@@ -72,7 +72,8 @@ describe('King.js', () => {
             expect(king.canQueenSideCastle(chessBoardState)).toBe(true);
 
             // Move rook forward and back
-            chessBoardState.move(new Move([7, 0], [6, 0]));
+            const rookMoveUp = leftRook.validMoves(chessBoardState)[0];
+            rookMoveUp.execute(chessBoardState);
             expect(king.canQueenSideCastle(chessBoardState)).toBe(false);
             chessBoardState.move(new Move([6, 0], [7, 0]));
             expect(king.canQueenSideCastle(chessBoardState)).toBe(false);
@@ -203,7 +204,8 @@ describe('King.js', () => {
             expect(king.canKingSideCastle(chessBoardState)).toBe(true);
 
             // Move rook forward and back
-            chessBoardState.move(new Move([7, 7], [6, 7]));
+            const rookMoveDown = rightRook.validMoves(chessBoardState)[0];
+            rookMoveDown.execute(chessBoardState);
             expect(king.canKingSideCastle(chessBoardState)).toBe(false);
             chessBoardState.move(new Move([6, 7], [7, 7]));
             expect(king.canKingSideCastle(chessBoardState)).toBe(false);

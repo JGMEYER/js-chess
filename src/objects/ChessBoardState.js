@@ -30,7 +30,7 @@ class ChessBoardState {
             ]
         }
         this.currentPlayer = currentPlayer;
-        this.availableCastles = '-';
+        this.availableCastles = 'KQkq';
         this.enPassantTarget = '-';
         this.halfMoveClock = 0;
         this.fullMoveNumber = 1;
@@ -104,6 +104,26 @@ class ChessBoardState {
         if (this.currentPlayer === Color.WHITE) {
             this.fullMoveNumber++;
         }
+    }
+
+    /**
+     * Check if castle opportunity available
+     * e.g. 'KQkq' -> invalidateCastle('Q') -> returns true
+     * e.g. 'Kkq' -> invalidateCastle('KQ') -> returns false
+     * @param {string} castleCode
+     */
+    castleAvailable(castleCode) {
+        return this.availableCastles.includes(castleCode);
+    }
+
+    /**
+     * Invalidate castle opportunity
+     * e.g. 'KQkq' -> invalidateCastle('Q') -> 'Kkq'
+     * e.g. 'KQkq' -> invalidateCastle('kq') -> 'KQ'
+     * @param {string} castleCode
+     */
+    invalidateCastle(castleCode) {
+        this.availableCastles = this.availableCastles.replace(castleCode, '');
     }
 
     /**
