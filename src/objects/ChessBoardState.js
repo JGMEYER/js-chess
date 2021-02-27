@@ -135,7 +135,7 @@ class ChessBoardState {
     invalidateCastle(castleCode) {
         this.availableCastles = this.availableCastles.replace(castleCode, '');
 
-        if (!this.availableCastles) {
+        if (this.availableCastles === '') {
             this.availableCastles = '-';
         }
     }
@@ -244,15 +244,25 @@ class ChessBoardState {
      */
     static fromFEN(fen) {
         const split = fen.split(' ');
+
+        if (split.length !== 6) {
+            throw new Error('FEN string must have 6 components: [ranks activePlayer availableCastles enPassantTarget halfMoveClock fullMoveNumber]');
+        }
+
         const rankStr = split[0];
         const currentPlayerStr = split[1];
         const availableCastlesStr = split[2];
         const enPassantTargetStr = split[3];
-        const halfMoveClock = Number(split[4]);
-        const fullMoveNumber = Number(split[5]);
+        const halfMoveClockStr = split[4];
+        const fullMoveNumberStr = split[5];
+
+        if (rankStr.indexOf('K') === -1 || rankStr.indexOf('k') === -1) {
+            throw new Error('Both white and black king must be present');
+        }
 
         const chessBoardState = new ChessBoardState();
 
+        // 1. Ranks
         let ranks = rankStr.split('/');
         if (ranks.length !== 8) {
             throw new RangeError('FEN must contain 8 ranks');
@@ -261,6 +271,13 @@ class ChessBoardState {
             let file = 0;
             for (let i = 0; i < ranks[rank].length; i++) {
                 const char = ranks[rank][i];
+
+                if ((char >= '1' && char <= '8')
+                    || (['P', 'N', 'B', 'R', 'Q', 'K'].includes(char.toUpperCase()))) {
+                    // ok
+                } else {
+                    throw new Error('Invalid rank notation char');
+                }
 
                 // Empty spaces, ignore
                 if (char >= '1' && char <= '8') {
@@ -298,8 +315,14 @@ class ChessBoardState {
                 chessBoardState.board[rank][file] = piece;
                 file++;
             }
+
+            if (file < 7 || file > 8) {
+                // Not the best check, could end up with idx 7 or 8, depending on logic
+                throw new Error('File must contain 8 pieces');
+            }
         }
 
+        // 2. Active Player
         switch (currentPlayerStr) {
             case 'w':
                 chessBoardState.currentPlayer = Color.WHITE;
@@ -311,10 +334,42 @@ class ChessBoardState {
                 throw new Error('Invalid active color notation')
         }
 
-        chessBoardState.enPassantTarget = enPassantTargetStr;
+        // 3. Available Castles
+        if (!availableCastlesStr.match('(\-|K?Q?k?q?)')) {
+            throw new Error('Malformed available castles')
+        }
         chessBoardState.availableCastles = availableCastlesStr;
-        chessBoardState.halfMoveClock = halfMoveClock;
-        chessBoardState.fullMoveNumber = fullMoveNumber;
+
+        // 4. En Passant Target
+        if (
+            (enPassantTargetStr.length === 1 && enPassantTargetStr === '-')
+            || (
+                enPassantTargetStr.length === 2
+                && (enPassantTargetStr[0] >= 'a' && enPassantTargetStr[0] <= 'h')
+                && (enPassantTargetStr[1] >= 1 && enPassantTargetStr[1] <= 8)
+            )
+        ) {
+            // ok
+        } else {
+            throw new Error('Malformed en passant target');
+        }
+        chessBoardState.enPassantTarget = enPassantTargetStr;
+
+        // 5. Half Move Clock
+        if (isNaN(halfMoveClockStr)
+            || parseInt(halfMoveClockStr) != halfMoveClockStr
+            || parseInt(halfMoveClockStr) < 0) {
+            throw new Error('Half Move Clock must be an integer >= 0')
+        }
+        chessBoardState.halfMoveClock = Number(halfMoveClockStr);
+
+        // 6. Full Move Number
+        if (isNaN(fullMoveNumberStr)
+            || parseInt(fullMoveNumberStr) != fullMoveNumberStr
+            || parseInt(fullMoveNumberStr) < 1) {
+            throw new Error('Full Move Number must be a positive integer')
+        }
+        chessBoardState.fullMoveNumber = Number(fullMoveNumberStr);
 
         return chessBoardState;
     }
@@ -348,22 +403,7 @@ class ChessBoardState {
 
         fen += this.currentPlayer === Color.WHITE ? ' w' : ' b';
 
-        fen += ' ';
-        const whiteKing = this.getPiecesFor(Color.WHITE, King)[0];
-        if (whiteKing.kingSideCastleAvailable(this)) {
-            fen += 'K';
-        }
-        if (whiteKing.queenSideCastleAvailable(this)) {
-            fen += 'Q';
-        }
-        const blackKing = this.getPiecesFor(Color.BLACK, King)[0];
-        if (blackKing.kingSideCastleAvailable(this)) {
-            fen += 'k';
-        }
-        if (blackKing.queenSideCastleAvailable(this)) {
-            fen += 'q';
-        }
-
+        fen += ` ${this.availableCastles}`;
         fen += ` ${this.enPassantTarget}`;
         fen += ` ${this.halfMoveClock}`;
         fen += ` ${this.fullMoveNumber}`;
