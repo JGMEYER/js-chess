@@ -76,9 +76,11 @@ class ChessGameUI extends React.Component {
             console.log('Invalid move');
         }
 
+        console.log(this.state.chessBoardState.toFEN());
+
         this.setState(prev => ({
             ...prev,
-            chessBoardState: new ChessBoardState(this.state.chessBoardState.board),
+            chessBoardState: ChessBoardState.fromFEN(this.state.chessBoardState.toFEN()),
             selectedPiece: null,
             currentPlayer: nextPlayer,
         }));

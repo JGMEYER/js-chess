@@ -1,9 +1,9 @@
 /**
- * Convert (row, col) pair to (file, rank).
- * @param {number} row
- * @param {number} col
+ * Convert (row, col) pair to fileRank.
+ * @param {Array<number>} rowCol
  */
-export function rowCol2FileRank(row, col) {
+export function rowCol2FileRank(rowCol) {
+    const [row, col] = rowCol;
     if (!typeof row === 'number') {
         throw TypeError('Row must be a number');
     }
@@ -19,21 +19,20 @@ export function rowCol2FileRank(row, col) {
 
     const file = String.fromCharCode(col + 97);
     const rank = 8 - row;
-    return [file, rank]
+    return `${file}${rank}`;
 }
 
 /**
- * Convert (file, rank) pair to (row, col).
- * @param {string} file
- * @param {number} rank
+ * Convert fileRank to (row, col).
+ * @param {string} fileRank
  */
-export function fileRank2RowCol(file, rank) {
-    if (!typeof file === 'string' || file.length !== 1 || file.toLowerCase() !== file) {
-        throw TypeError('File must be a single lowercase letter');
+export function fileRank2RowCol(fileRank) {
+    if (!typeof fileRank === 'string' || fileRank.length !== 2 || fileRank.toLowerCase() !== fileRank) {
+        throw TypeError('FileRank must be 2-character lowercase string');
     }
-    if (!typeof rank === 'number') {
-        throw TypeError('Rank must be a number');
-    }
+
+    const file = fileRank[0];
+    const rank = Number(fileRank[1]);
     if (file < 'a' || file > 'h') {
         throw RangeError('File out of bounds');
     }

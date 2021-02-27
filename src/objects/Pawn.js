@@ -1,16 +1,18 @@
 import ChessBoardState from './ChessBoardState';
 import ChessPiece from './ChessPiece';
 import Move from './Move';
-import Color from '../utils/color';
 import Queen from './Queen';
+import { rowCol2FileRank } from '../utils/board';
+import Color from '../utils/color';
 
 class Pawn extends ChessPiece {
     constructor(color, row, col) {
         const icon = '♟';
-        super(icon, color, row, col);
+        const printIcon = color === Color.WHITE ? '♙' : '♟';
+        const notation = color === Color.WHITE ? 'P' : 'p';
+        super(icon, printIcon, notation, color, row, col);
 
         this.hasMoved = false;
-        this.justMoved = false;
     }
 
     /**
@@ -20,8 +22,6 @@ class Pawn extends ChessPiece {
      */
     move(row, col) {
         super.move(row, col);
-
-        this.justMoved = !this.hasMoved ? true : false;
         this.hasMoved = true;
     }
 
@@ -72,11 +72,9 @@ class Pawn extends ChessPiece {
                 const topLeftPiece = chessBoardState.get(this.row - 1, this.col - 1);
                 if (topLeftPiece && topLeftPiece.isEnemyOf(this.color)) {
                     validMoves.push(new Move([this.row, this.col], [this.row - 1, this.col - 1]));
-                } else if ((topLeftPiece && topLeftPiece.isEnemyOf(this.color)) || topLeftPiece === null) {
+                } else if (chessBoardState.enPassantTarget === rowCol2FileRank([this.row - 1, this.col - 1])) {
                     // En passant
-                    if (leftPiece instanceof Pawn && leftPiece.justMoved) {
-                        validMoves.push(new Move([this.row, this.col], [this.row - 1, this.col - 1]));
-                    }
+                    validMoves.push(new Move([this.row, this.col], [this.row - 1, this.col - 1]));
                 }
             }
             // Top right
@@ -84,11 +82,9 @@ class Pawn extends ChessPiece {
                 const topRightPiece = chessBoardState.get(this.row - 1, this.col + 1);
                 if (topRightPiece && topRightPiece.isEnemyOf(this.color)) {
                     validMoves.push(new Move([this.row, this.col], [this.row - 1, this.col + 1]));
-                } else if ((topRightPiece && topRightPiece.isEnemyOf(this.color)) || topRightPiece === null) {
+                } else if (chessBoardState.enPassantTarget === rowCol2FileRank([this.row - 1, this.col + 1])) {
                     // En passant
-                    if (rightPiece instanceof Pawn && rightPiece.justMoved) {
-                        validMoves.push(new Move([this.row, this.col], [this.row - 1, this.col + 1]));
-                    }
+                    validMoves.push(new Move([this.row, this.col], [this.row - 1, this.col + 1]));
                 }
             }
         } else if (this.color === Color.BLACK) {
@@ -97,11 +93,9 @@ class Pawn extends ChessPiece {
                 const bottomLeftPiece = chessBoardState.get(this.row + 1, this.col - 1);
                 if (bottomLeftPiece && bottomLeftPiece.isEnemyOf(this.color)) {
                     validMoves.push(new Move([this.row, this.col], [this.row + 1, this.col - 1]));
-                } else if ((bottomLeftPiece && bottomLeftPiece.isEnemyOf(this.color)) || bottomLeftPiece === null) {
+                } else if (chessBoardState.enPassantTarget === rowCol2FileRank([this.row + 1, this.col - 1])) {
                     // En passant
-                    if (leftPiece instanceof Pawn && leftPiece.justMoved) {
-                        validMoves.push(new Move([this.row, this.col], [this.row + 1, this.col - 1]));
-                    }
+                    validMoves.push(new Move([this.row, this.col], [this.row + 1, this.col - 1]));
                 }
             }
             // Bottom right
@@ -109,33 +103,40 @@ class Pawn extends ChessPiece {
                 const bottomRightPiece = chessBoardState.get(this.row + 1, this.col + 1);
                 if (bottomRightPiece && bottomRightPiece.isEnemyOf(this.color)) {
                     validMoves.push(new Move([this.row, this.col], [this.row + 1, this.col + 1]));
-                } else if ((bottomRightPiece && bottomRightPiece.isEnemyOf(this.color)) || bottomRightPiece === null) {
+                } else if (chessBoardState.enPassantTarget === rowCol2FileRank([this.row + 1, this.col + 1])) {
                     // En passant
-                    if (rightPiece instanceof Pawn && rightPiece.justMoved) {
-                        validMoves.push(new Move([this.row, this.col], [this.row + 1, this.col + 1]));
-                    }
+                    validMoves.push(new Move([this.row, this.col], [this.row + 1, this.col + 1]));
                 }
             }
         }
 
         validMoves.forEach(move => {
             move.execute = (chessBoardState) => {
+                const [rowStart, colStart] = move.coordsAStart;
                 const [row, col] = move.coordsAEnd;
 
                 // En passant
-                if (this.color === Color.WHITE) {
-                    const pieceBehind = chessBoardState.get(row + 1, col);
-                    if (pieceBehind instanceof Pawn && pieceBehind.justMoved) {
+                if (chessBoardState.enPassantTarget === rowCol2FileRank([row, col])) {
+                    if (this.color === Color.WHITE) {
                         chessBoardState.board[row + 1][col] = null;
-                    }
-                } else if (this.color === Color.BLACK) {
-                    const pieceBehind = chessBoardState.get(row - 1, col);
-                    if (pieceBehind instanceof Pawn && pieceBehind.justMoved) {
+                    } else if (this.color === Color.BLACK) {
                         chessBoardState.board[row - 1][col] = null;
                     }
                 }
 
                 chessBoardState.move(move);
+
+                if (Math.abs(rowStart - row) === 2) {
+                    // Moved 2 spaces, mark for en passant
+                    if (this.color === Color.WHITE) {
+                        chessBoardState.enPassantTarget = rowCol2FileRank([row + 1, col]);
+                    } else if (this.color === Color.BLACK) {
+                        chessBoardState.enPassantTarget = rowCol2FileRank([row - 1, col]);
+                    }
+                } else {
+                    // Reset enPassantTarget
+                    chessBoardState.enPassantTarget = '-';
+                }
 
                 // Queen promotion
                 if (row === 0 || row === 7) {

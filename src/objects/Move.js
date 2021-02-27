@@ -20,6 +20,7 @@ class Move {
      */
     execute(chessBoardState) {
         chessBoardState.move(this);
+        chessBoardState.enPassantTarget = '-';
     }
 }
 

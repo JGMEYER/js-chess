@@ -14,7 +14,7 @@ import Color from '../utils/color';
  * Handles the state of the chess board and its pieces.
  */
 class ChessBoardState {
-    constructor(board) {
+    constructor(board, currentPlayer = Color.WHITE) {
         if (board) {
             this.board = board;
         } else {
@@ -29,6 +29,11 @@ class ChessBoardState {
                 [null, null, null, null, null, null, null, null],
             ]
         }
+        this.currentPlayer = currentPlayer;
+        this.availableCastles = 'KQkq';
+        this.enPassantTarget = '-';
+        this.halfMoveClock = 0;
+        this.fullMoveNumber = 1;
     }
 
     /**
@@ -54,6 +59,11 @@ class ChessBoardState {
             [new Pawn(Color.WHITE, 6, 0), new Pawn(Color.WHITE, 6, 1), new Pawn(Color.WHITE, 6, 2), new Pawn(Color.WHITE, 6, 3), new Pawn(Color.WHITE, 6, 4), new Pawn(Color.WHITE, 6, 5), new Pawn(Color.WHITE, 6, 6), new Pawn(Color.WHITE, 6, 7)],
             [new Rook(Color.WHITE, 7, 0), new Knight(Color.WHITE, 7, 1), new Bishop(Color.WHITE, 7, 2), new Queen(Color.WHITE, 7, 3), new King(Color.WHITE, 7, 4), new Bishop(Color.WHITE, 7, 5), new Knight(Color.WHITE, 7, 6), new Rook(Color.WHITE, 7, 7)],
         ]
+        this.currentPlayer = Color.WHITE;
+        this.availableCastles = 'KQkq';
+        this.enPassantTarget = '-';
+        this.halfMoveClock = 0;
+        this.fullMoveNumber = 1;
     }
 
     /**
@@ -68,10 +78,11 @@ class ChessBoardState {
         this.board[aR1][aC1] = null;
         pieceA.move(aR2, aC2);
 
-        // Reset en passant
-        const enemyColor = this.board[aR2][aC2].color === Color.WHITE ? Color.BLACK : Color.WHITE;
-        const pawns = this.getPiecesFor(enemyColor, Pawn);
-        pawns.forEach(pawn => pawn.justMoved = false);
+        if (pieceA instanceof Pawn || pieceA instanceof King) {
+            this.halfMoveClock = 0;
+        } else {
+            this.halfMoveClock++;
+        }
 
         if (move.coordsBStart !== null && move.coordsBEnd !== null) {
             const [bR1, bC1] = move.coordsBStart;
@@ -81,6 +92,42 @@ class ChessBoardState {
             this.board[bR1][bC1] = null;
             pieceB.move(bR2, bC2);
         }
+
+        this.currentPlayer = this.currentPlayer === Color.WHITE
+            ? Color.BLACK
+            : Color.WHITE;
+        if (this.currentPlayer === Color.WHITE) {
+            this.fullMoveNumber++;
+        }
+    }
+
+    /**
+     * Remove piece from board.
+     * @param {number} row
+     * @param {number} col
+     */
+    removePiece(row, col) {
+        this.board[row][col] = null;
+    }
+
+    /**
+     * Check if castle opportunity available
+     * e.g. 'KQkq' -> invalidateCastle('Q') -> returns true
+     * e.g. 'Kkq' -> invalidateCastle('KQ') -> returns false
+     * @param {string} castleCode
+     */
+    castleAvailable(castleCode) {
+        return this.availableCastles.includes(castleCode);
+    }
+
+    /**
+     * Invalidate castle opportunity
+     * e.g. 'KQkq' -> invalidateCastle('Q') -> 'Kkq'
+     * e.g. 'KQkq' -> invalidateCastle('kq') -> 'KQ'
+     * @param {string} castleCode
+     */
+    invalidateCastle(castleCode) {
+        this.availableCastles = this.availableCastles.replace(castleCode, '');
     }
 
     /**
@@ -182,6 +229,139 @@ class ChessBoardState {
     }
 
     /**
+     * Generates board state from Forsyth-Edwards Notation.
+     * @param {string} fen
+     */
+    static fromFEN(fen) {
+        const split = fen.split(' ');
+        const rankStr = split[0];
+        const currentPlayerStr = split[1];
+        const availableCastlesStr = split[2];
+        const enPassantTargetStr = split[3];
+        const halfMoveClock = Number(split[4]);
+        const fullMoveNumber = Number(split[5]);
+
+        const chessBoardState = new ChessBoardState();
+
+        let ranks = rankStr.split('/');
+        if (ranks.length !== 8) {
+            throw new RangeError('FEN must contain 8 ranks');
+        }
+        for (let rank = 0; rank < 8; rank++) {
+            let file = 0;
+            for (let i = 0; i < ranks[rank].length; i++) {
+                const char = ranks[rank][i];
+
+                // Empty spaces, ignore
+                if (char >= '1' && char <= '8') {
+                    file += Number(char);
+                    continue;
+                }
+
+                const color = char === char.toUpperCase()
+                    ? Color.WHITE
+                    : Color.BLACK;
+                let piece;
+                switch (char.toLowerCase()) {
+                    case 'p':
+                        piece = new Pawn(color, rank, file);
+                        break;
+                    case 'n':
+                        piece = new Knight(color, rank, file);
+                        break;
+                    case 'b':
+                        piece = new Bishop(color, rank, file);
+                        break;
+                    case 'r':
+                        piece = new Rook(color, rank, file);
+                        break;
+                    case 'q':
+                        piece = new Queen(color, rank, file);
+                        break;
+                    case 'k':
+                        piece = new King(color, rank, file);
+                        break;
+                    default:
+                        throw new Error('Invalid piece notation');
+                }
+
+                chessBoardState.board[rank][file] = piece;
+                file++;
+            }
+        }
+
+        switch (currentPlayerStr) {
+            case 'w':
+                chessBoardState.currentPlayer = Color.WHITE;
+                break;
+            case 'b':
+                chessBoardState.currentPlayer = Color.BLACK;
+                break;
+            default:
+                throw new Error('Invalid active color notation')
+        }
+
+        chessBoardState.enPassantTarget = enPassantTargetStr;
+        chessBoardState.availableCastles = availableCastlesStr;
+        chessBoardState.halfMoveClock = halfMoveClock;
+        chessBoardState.fullMoveNumber = fullMoveNumber;
+
+        return chessBoardState;
+    }
+
+    /**
+     * Returns Forsyth–Edwards Notation for board state.
+     */
+    toFEN() {
+        let ranks = [];
+        this.board.forEach(rank => {
+            let ranksStr = '';
+            let emptySpaces = 0;
+            rank.forEach(piece => {
+                if (piece === null) {
+                    emptySpaces++;
+                } else {
+                    if (emptySpaces) {
+                        ranksStr += emptySpaces;
+                        emptySpaces = 0;
+                    }
+                    ranksStr += piece.notation;
+                }
+            });
+            if (emptySpaces) {
+                ranksStr += emptySpaces;
+            }
+            ranks.push(ranksStr);
+        });
+
+        let fen = ranks.join('/');
+
+        fen += this.currentPlayer === Color.WHITE ? ' w' : ' b';
+
+        fen += ' ';
+        const whiteKing = this.getPiecesFor(Color.WHITE, King)[0];
+        if (whiteKing.kingSideCastleAvailable(this)) {
+            fen += 'K';
+        }
+        if (whiteKing.queenSideCastleAvailable(this)) {
+            fen += 'Q';
+        }
+        const blackKing = this.getPiecesFor(Color.BLACK, King)[0];
+        if (blackKing.kingSideCastleAvailable(this)) {
+            fen += 'k';
+        }
+        if (blackKing.queenSideCastleAvailable(this)) {
+            fen += 'q';
+        }
+
+        fen += ` ${this.enPassantTarget}`;
+        fen += ` ${this.halfMoveClock}`;
+        fen += ` ${this.fullMoveNumber}`;
+
+        return fen;
+    }
+
+    /**
      * Pretty print the board state to the console.
      */
     print() {
@@ -189,7 +369,7 @@ class ChessBoardState {
         this.board.forEach(row => {
             let rowString = '';
             row.forEach(piece => {
-                rowString += piece === null ? '.' : piece.icon;
+                rowString += piece === null ? '.' : piece.printIcon;
             })
             rowStrings.push(rowString);
         })

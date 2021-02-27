@@ -27,8 +27,8 @@ describe('Pawn.js', () => {
                 [null, null, null, null, whiteKing, null, null, null],
             ]
 
-            const blackMove = new Move([1, 7], [3, 7]);
-            blackMove.execute(chessBoardState);
+            const black2Spaces = blackPawn.validMoves(chessBoardState)[1];
+            black2Spaces.execute(chessBoardState);
 
             const validWhitePawnMoves = whitePawn.validMoves(chessBoardState);
             expect(validWhitePawnMoves[0].coordsAEnd).toEqual([2, 6]);

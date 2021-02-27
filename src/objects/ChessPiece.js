@@ -11,17 +11,21 @@ class ChessPiece {
     /**
      * @constructor
      * @param {string} icon
+     * @param {string} printIcon Icon for debug/print
+     * @param {string} notation
      * @param {Color} color
      * @param {number} row
      * @param {number} col
      */
-    constructor(icon, color, row, col) {
+    constructor(icon, printIcon, notation, color, row, col) {
         if (this.constructor == ChessPiece) {
             throw new Error('Cannot instantiate abstract class ChessPiece');
         }
 
         this.id = ChessPiece.count;
         this.icon = icon;
+        this.printIcon = printIcon;
+        this.notation = notation;
         this.color = color;
         this.row = row;
         this.col = col;
