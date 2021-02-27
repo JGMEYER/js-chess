@@ -30,6 +30,7 @@ class ChessBoardState {
             ]
         }
         this.currentPlayer = currentPlayer;
+        this.availableCastles = '-';
         this.enPassantTarget = '-';
         this.halfMoveClock = 0;
         this.fullMoveNumber = 1;
@@ -59,6 +60,7 @@ class ChessBoardState {
             [new Rook(Color.WHITE, 7, 0), new Knight(Color.WHITE, 7, 1), new Bishop(Color.WHITE, 7, 2), new Queen(Color.WHITE, 7, 3), new King(Color.WHITE, 7, 4), new Bishop(Color.WHITE, 7, 5), new Knight(Color.WHITE, 7, 6), new Rook(Color.WHITE, 7, 7)],
         ]
         this.currentPlayer = Color.WHITE;
+        this.availableCastles = 'KQkq';
         this.enPassantTarget = '-';
         this.halfMoveClock = 0;
         this.fullMoveNumber = 1;
@@ -263,6 +265,21 @@ class ChessBoardState {
                 file++;
             }
         }
+
+        switch (currentPlayerStr) {
+            case 'w':
+                chessBoardState.currentPlayer = Color.WHITE;
+                break;
+            case 'b':
+                chessBoardState.currentPlayer = Color.BLACK;
+            default:
+                throw new Error('Invalid active color notation')
+        }
+
+        chessBoardState.enPassantTarget = enPassantTargetStr;
+        chessBoardState.availableCastles = availableCastlesStr;
+        chessBoardState.halfMoveClock = halfMoveClock;
+        chessBoardState.fullMoveNumber = fullMoveNumber;
 
         return chessBoardState;
     }
