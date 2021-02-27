@@ -8,8 +8,9 @@ import Color from '../utils/color';
 class Pawn extends ChessPiece {
     constructor(color, row, col) {
         const icon = '♟';
+        const printIcon = color === Color.WHITE ? '♙' : '♟';
         const notation = color === Color.WHITE ? 'P' : 'p';
-        super(icon, notation, color, row, col);
+        super(icon, printIcon, notation, color, row, col);
 
         this.hasMoved = false;
         this.justMoved = false;

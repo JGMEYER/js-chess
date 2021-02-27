@@ -203,28 +203,93 @@ class ChessBoardState {
     }
 
     /**
+     * Generates board state from Forsyth-Edwards Notation.
+     * @param {string} fen
+     */
+    static fromFEN(fen) {
+        const split = fen.split(' ');
+        const rankStr = split[0];
+        const currentPlayerStr = split[1];
+        const availableCastlesStr = split[2];
+        const enPassantTargetStr = split[3];
+        const halfMoveClock = Number(split[4]);
+        const fullMoveNumber = Number(split[5]);
+
+        const chessBoardState = new ChessBoardState();
+
+        let ranks = rankStr.split('/');
+        if (ranks.length !== 8) {
+            throw new RangeError('FEN must contain 8 ranks');
+        }
+        for (let rank = 0; rank < 8; rank++) {
+            let file = 0;
+            for (let i = 0; i < ranks[rank].length; i++) {
+                const char = ranks[rank][i];
+
+                // Empty spaces, ignore
+                if (char >= '1' && char <= '8') {
+                    file += Number(char);
+                    continue;
+                }
+
+                const color = char === char.toUpperCase()
+                    ? Color.WHITE
+                    : Color.BLACK;
+                let piece;
+                switch (char.toLowerCase()) {
+                    case 'p':
+                        piece = new Pawn(color, rank, file);
+                        break;
+                    case 'n':
+                        piece = new Knight(color, rank, file);
+                        break;
+                    case 'b':
+                        piece = new Bishop(color, rank, file);
+                        break;
+                    case 'r':
+                        piece = new Rook(color, rank, file);
+                        break;
+                    case 'q':
+                        piece = new Queen(color, rank, file);
+                        break;
+                    case 'k':
+                        piece = new King(color, rank, file);
+                        break;
+                    default:
+                        throw new Error('Invalid piece notation');
+                }
+
+                chessBoardState.board[rank][file] = piece;
+                file++;
+            }
+        }
+
+        return chessBoardState;
+    }
+
+    /**
      * Returns Forsyth–Edwards Notation for board state.
      */
     toFEN() {
         let ranks = [];
         this.board.forEach(rank => {
-            let rankStr = '';
+            let ranksStr = '';
             let emptySpaces = 0;
             rank.forEach(piece => {
                 if (piece === null) {
                     emptySpaces++;
                 } else {
                     if (emptySpaces) {
-                        rankStr += emptySpaces;
+                        ranksStr += emptySpaces;
                         emptySpaces = 0;
                     }
-                    rankStr += piece.notation;
+                    ranksStr += piece.notation;
                 }
             });
             if (emptySpaces) {
-                rankStr += emptySpaces;
+                ranksStr += emptySpaces;
             }
-            ranks.push(rankStr);
+            ranks.push(ranksStr);
         });
 
         let fen = ranks.join('/');
@@ -262,7 +327,7 @@ class ChessBoardState {
         this.board.forEach(row => {
             let rowString = '';
             row.forEach(piece => {
-                rowString += piece === null ? '.' : piece.icon;
+                rowString += piece === null ? '.' : piece.printIcon;
             })
             rowStrings.push(rowString);
         })

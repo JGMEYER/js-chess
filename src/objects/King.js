@@ -7,8 +7,9 @@ import Color from '../utils/color';
 class King extends ChessPiece {
     constructor(color, row, col) {
         const icon = '♚';
+        const printIcon = color === Color.WHITE ? '♔' : '♚';
         const notation = color === Color.WHITE ? 'K' : 'k';
-        super(icon, notation, color, row, col);
+        super(icon, printIcon, notation, color, row, col);
 
         this.hasMoved = false;
     }

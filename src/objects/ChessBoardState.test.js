@@ -1,7 +1,26 @@
 import ChessBoardState from "./ChessBoardState";
+import ChessPiece from "./ChessPiece";
 import Move from "./Move";
 
 describe('ChessBoardState.js', () => {
+    describe('fromFEN()', () => {
+        test('starting location', () => {
+            const startingChessBoardState = new ChessBoardState();
+            startingChessBoardState.reset();
+
+            // Reset ChessPiece ids for test
+            ChessPiece.count = 0;
+
+            const expected = startingChessBoardState;
+            const actual = ChessBoardState.fromFEN('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+            expect(expected).toEqual(actual);
+        });
+
+        test('more complex conversion', () => {
+
+        });
+    });
+
     describe('toFEN()', () => {
         test('starting location', () => {
             const chessBoardState = new ChessBoardState();
