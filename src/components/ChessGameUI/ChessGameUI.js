@@ -19,7 +19,6 @@ class ChessGameUI extends React.Component {
         this.state = {
             chessBoardState: chessBoardState,
             selectedPiece: null,
-            currentPlayer: Color.WHITE,
         }
 
         this.selectPiece = this.selectPiece.bind(this);
@@ -38,7 +37,7 @@ class ChessGameUI extends React.Component {
                 selectedPiece: null,
             }));
         } else {
-            if (piece.color === this.state.currentPlayer) {
+            if (piece.color === this.state.chessBoardState.currentPlayer) {
                 // Select piece
                 this.setState(prev => ({
                     ...prev,
@@ -59,8 +58,6 @@ class ChessGameUI extends React.Component {
             return;
         }
 
-        let nextPlayer = this.state.currentPlayer;
-
         const validMoves = this.state.selectedPiece.validMoves(
             this.state.chessBoardState
         )
@@ -68,10 +65,6 @@ class ChessGameUI extends React.Component {
             move.coordsAEnd[0] === row && move.coordsAEnd[1] === col)[0];
         if (move) {
             move.execute(this.state.chessBoardState);
-            nextPlayer =
-                this.state.currentPlayer === Color.WHITE
-                    ? Color.BLACK
-                    : Color.WHITE;
         } else {
             console.log('Invalid move');
         }
@@ -82,7 +75,6 @@ class ChessGameUI extends React.Component {
             ...prev,
             chessBoardState: ChessBoardState.fromFEN(this.state.chessBoardState.toFEN()),
             selectedPiece: null,
-            currentPlayer: nextPlayer,
         }));
     }
 

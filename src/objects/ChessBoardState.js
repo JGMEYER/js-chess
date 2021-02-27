@@ -14,23 +14,19 @@ import Color from '../utils/color';
  * Handles the state of the chess board and its pieces.
  */
 class ChessBoardState {
-    constructor(board, currentPlayer = Color.WHITE) {
-        if (board) {
-            this.board = board;
-        } else {
-            this.board = [
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-            ]
-        }
-        this.currentPlayer = currentPlayer;
-        this.availableCastles = 'KQkq';
+    constructor() {
+        this.board = [
+            [null, null, null, null, null, null, null, null],
+            [null, null, null, null, null, null, null, null],
+            [null, null, null, null, null, null, null, null],
+            [null, null, null, null, null, null, null, null],
+            [null, null, null, null, null, null, null, null],
+            [null, null, null, null, null, null, null, null],
+            [null, null, null, null, null, null, null, null],
+            [null, null, null, null, null, null, null, null],
+        ]
+        this.currentPlayer = Color.WHITE;
+        this.availableCastles = '-';
         this.enPassantTarget = '-';
         this.halfMoveClock = 0;
         this.fullMoveNumber = 1;
