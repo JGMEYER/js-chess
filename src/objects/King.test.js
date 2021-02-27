@@ -50,66 +50,35 @@ describe('King.js', () => {
 
         test('3. There are no pieces between the king and the chosen rook', () => {
             let chessBoardState = ChessBoardState.fromFEN('8/8/8/8/8/8/8/R3K2R w KQ - 0 1')
-            const king = chessBoardState.getFileRank('e1');
+            let king = chessBoardState.getFileRank('e1');
             expect(king.canQueenSideCastle(chessBoardState)).toBe(true);
 
             chessBoardState = ChessBoardState.fromFEN('8/8/8/8/8/8/8/RN2K2R w KQ - 0 1')
+            king = chessBoardState.getFileRank('e1');
             expect(king.canQueenSideCastle(chessBoardState)).toBe(false);
 
             chessBoardState = ChessBoardState.fromFEN('8/8/8/8/8/8/8/R1N1K2R w KQ - 0 1')
+            king = chessBoardState.getFileRank('e1');
             expect(king.canQueenSideCastle(chessBoardState)).toBe(false);
 
-            chessBoardState = ChessBoardState.fromFEN('8/8/8/8/8/8/8/R1NK2R w KQ - 0 1')
+            chessBoardState = ChessBoardState.fromFEN('8/8/8/8/8/8/8/R2NK2R w KQ - 0 1')
+            king = chessBoardState.getFileRank('e1');
             expect(king.canQueenSideCastle(chessBoardState)).toBe(false);
         });
 
         test('4. The king is not currently in check', () => {
-            const leftRook = new Rook(Color.WHITE, 7, 0);
-            const king = new King(Color.WHITE, 7, 4);
-
-            const chessBoardState = new ChessBoardState();
-
-            chessBoardState.board = [
-                [null, null, null, null, new Rook(Color.BLACK, 0, 4), null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [leftRook, null, null, null, king, null, null, null],
-            ]
+            const chessBoardState = ChessBoardState.fromFEN('4r3/8/8/8/8/8/8/R3K2R w KQ - 0 1');
+            const king = chessBoardState.getFileRank('e1');
             expect(king.canQueenSideCastle(chessBoardState)).toBe(false);
         });
 
         test('5/6. The king would not pass through check or end up in check', () => {
-            const leftRook = new Rook(Color.WHITE, 7, 0);
-            const king = new King(Color.WHITE, 7, 4);
-
-            const chessBoardState = new ChessBoardState();
-
-            chessBoardState.board = [
-                [null, null, null, new Rook(Color.BLACK, 0, 3), null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [leftRook, null, null, null, king, null, null, null],
-            ]
+            let chessBoardState = ChessBoardState.fromFEN('3r4/8/8/8/8/8/8/R3K2R w KQ - 0 1');
+            let king = chessBoardState.getFileRank('e1');
             expect(king.canQueenSideCastle(chessBoardState)).toBe(false);
 
-            chessBoardState.board = [
-                [null, null, new Rook(Color.BLACK, 0, 2), null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [leftRook, null, null, null, king, null, null, null],
-            ]
+            chessBoardState = ChessBoardState.fromFEN('2r5/8/8/8/8/8/8/R3K2R w KQ - 0 1');
+            king = chessBoardState.getFileRank('e1');
             expect(king.canQueenSideCastle(chessBoardState)).toBe(false);
         });
     });
@@ -133,63 +102,31 @@ describe('King.js', () => {
 
         test('3. There are no pieces between the king and the chosen rook', () => {
             let chessBoardState = ChessBoardState.fromFEN('8/8/8/8/8/8/8/R3K2R w KQ - 0 1')
-            const king = chessBoardState.getFileRank('e1');
+            let king = chessBoardState.getFileRank('e1');
             expect(king.canKingSideCastle(chessBoardState)).toBe(true);
 
             chessBoardState = ChessBoardState.fromFEN('8/8/8/8/8/8/8/R3KN1R w KQ - 0 1')
+            king = chessBoardState.getFileRank('e1');
             expect(king.canKingSideCastle(chessBoardState)).toBe(false);
 
             chessBoardState = ChessBoardState.fromFEN('8/8/8/8/8/8/8/R3K1NR w KQ - 0 1')
+            king = chessBoardState.getFileRank('e1');
             expect(king.canKingSideCastle(chessBoardState)).toBe(false);
         });
 
         test('4. The king is not currently in check', () => {
-            const rightRook = new Rook(Color.WHITE, 7, 7);
-            const king = new King(Color.WHITE, 7, 4);
-
-            const chessBoardState = new ChessBoardState();
-
-            chessBoardState.board = [
-                [null, null, null, null, new Rook(Color.BLACK, 0, 4), null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, king, null, null, rightRook],
-            ]
-            expect(king.canQueenSideCastle(chessBoardState)).toBe(false);
+            const chessBoardState = ChessBoardState.fromFEN('4r3/8/8/8/8/8/8/R3K2R w KQ - 0 1');
+            const king = chessBoardState.getFileRank('e1');
+            expect(king.canKingSideCastle(chessBoardState)).toBe(false);
         });
 
         test('5/6. The king would not pass through check or end up in check', () => {
-            const rightRook = new Rook(Color.WHITE, 7, 7);
-            const king = new King(Color.WHITE, 7, 4);
-
-            const chessBoardState = new ChessBoardState();
-
-            chessBoardState.board = [
-                [null, null, null, null, null, new Rook(Color.BLACK, 0, 5), null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, king, null, null, rightRook],
-            ]
+            let chessBoardState = ChessBoardState.fromFEN('5r2/8/8/8/8/8/8/R3K2R w KQ - 0 1');
+            let king = chessBoardState.getFileRank('e1');
             expect(king.canKingSideCastle(chessBoardState)).toBe(false);
 
-            chessBoardState.board = [
-                [null, null, null, null, null, null, new Rook(Color.BLACK, 0, 6), null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, king, null, null, rightRook],
-            ]
+            chessBoardState = ChessBoardState.fromFEN('6r1/8/8/8/8/8/8/R3K2R w KQ - 0 1');
+            king = chessBoardState.getFileRank('e1');
             expect(king.canKingSideCastle(chessBoardState)).toBe(false);
         });
     });
