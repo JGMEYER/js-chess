@@ -11,18 +11,14 @@ class Pawn extends ChessPiece {
         const printIcon = color === Color.WHITE ? '♙' : '♟';
         const notation = color === Color.WHITE ? 'P' : 'p';
         super(icon, printIcon, notation, color, row, col);
-
-        this.hasMoved = false;
     }
 
     /**
-     * Move the Pawn to the designated (row, col).
-     * @param {number} row
-     * @param {number} col
+     * Returns whether the pawn has already moved.
      */
-    move(row, col) {
-        super.move(row, col);
-        this.hasMoved = true;
+    hasMoved() {
+        return (this.color === Color.WHITE && this.row !== 6)
+            || (this.color === Color.BLACK && this.row !== 1);
     }
 
     /**
@@ -46,7 +42,7 @@ class Pawn extends ChessPiece {
         }
 
         // Movement (2 spaces)
-        if (!this.hasMoved) {
+        if (!this.hasMoved()) {
             if (this.color === Color.WHITE) {
                 if (this.row > 1
                     && chessBoardState.get(this.row - 1, this.col) === null
