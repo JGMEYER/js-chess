@@ -2,11 +2,11 @@ import React from 'react';
 
 import ChessBoardUI from '../ChessBoardUI/ChessBoardUI';
 import ChessPieceUI from '../ChessPieceUI/ChessPieceUI';
+import FENFormUI from '../FENFormUI/FENFormUI';
 import ValidMovesUI from '../ValidMovesUI/ValidMovesUI';
 import ChessBoardState from '../../objects/ChessBoardState';
 import ChessPiece from '../../objects/ChessPiece';
 import King from '../../objects/King';
-import Color from '../../utils/color';
 
 class ChessGameUI extends React.Component {
 
@@ -23,6 +23,7 @@ class ChessGameUI extends React.Component {
 
         this.selectPiece = this.selectPiece.bind(this);
         this.movePiece = this.movePiece.bind(this);
+        this.updateBoard = this.updateBoard.bind(this);
     }
 
     /**
@@ -79,6 +80,17 @@ class ChessGameUI extends React.Component {
     }
 
     /**
+     * Update board to match FEN code.
+     * @param {string} fenCode
+     */
+    updateBoard(fenCode) {
+        this.setState(prev => ({
+            ...prev,
+            chessBoardState: ChessBoardState.fromFEN(fenCode),
+        }));
+    }
+
+    /**
      * Render ChessGame.
      */
     render() {
@@ -109,6 +121,10 @@ class ChessGameUI extends React.Component {
                             movePiece={this.movePiece} />
                         : <div></div>
                 }
+                <FENFormUI
+                    fenCode={this.state.chessBoardState.toFEN()}
+                    updateBoard={this.updateBoard}
+                ></FENFormUI>
             </div>
         );
     }
