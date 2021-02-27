@@ -108,6 +108,37 @@ class ChessBoardState {
     }
 
     /**
+     * Execute stockfish move.
+     * @param {object} move
+     */
+    stockfishMove(move) {
+        const [fromR, fromC] = fileRank2RowCol(move.from);
+        const [toR, toC] = fileRank2RowCol(move.to);
+
+        // TODO promotion
+        // TODO en passant
+        // TODO castling
+
+        const piece = this.board[fromR][fromC];
+        this.board[fromR][fromC] = null;
+        this.board[toR][toC] = piece;
+        piece.move(toR, toC);
+
+        if (piece instanceof Pawn || piece instanceof King) {
+            this.halfMoveClock = 0;
+        } else {
+            this.halfMoveClock++;
+        }
+
+        this.currentPlayer = this.currentPlayer === Color.WHITE
+            ? Color.BLACK
+            : Color.WHITE;
+        if (this.currentPlayer === Color.WHITE) {
+            this.fullMoveNumber++;
+        }
+    }
+
+    /**
      * Remove piece from board.
      * @param {number} row
      * @param {number} col
