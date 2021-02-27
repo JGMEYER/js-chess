@@ -13,6 +13,25 @@ class FENFormUI extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+    /**
+     * Update state when props changed
+     * @param {object} props
+     * @param {object} currentState
+     */
+    static getDerivedStateFromProps(props, currentState) {
+        if (currentState.fenCode !== props.fenCode) {
+            return {
+                ...currentState,
+                fenCode: props.fenCode,
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Handle change
+     * @param {object} event
+     */
     handleChange(e) {
         this.setState(prev => ({
             ...prev,
@@ -21,6 +40,10 @@ class FENFormUI extends React.Component {
         }));
     }
 
+    /**
+     * Handle submit
+     * @param {object} event
+     */
     handleSubmit(e) {
         e.preventDefault();
         try {
@@ -35,6 +58,9 @@ class FENFormUI extends React.Component {
         this.props.updateBoard(this.state.fenCode);
     }
 
+    /**
+     * Render
+     */
     render() {
         return (
             <div>
