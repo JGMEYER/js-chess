@@ -68,6 +68,11 @@ class ChessBoardState {
         this.board[aR1][aC1] = null;
         pieceA.move(aR2, aC2);
 
+        // Reset en passant
+        const enemyColor = this.board[aR2][aC2].color === Color.WHITE ? Color.BLACK : Color.WHITE;
+        const pawns = this.getPiecesFor(enemyColor, Pawn);
+        pawns.forEach(pawn => pawn.justMoved = false);
+
         if (move.coordsBStart !== null && move.coordsBEnd !== null) {
             const [bR1, bC1] = move.coordsBStart;
             const [bR2, bC2] = move.coordsBEnd;
@@ -159,14 +164,17 @@ class ChessBoardState {
     /**
      * Returns an array of all pieces on the board for the given color.
      * @param {Color} color
+     * @param {ChessPiece} type Type of piece to filter on
      * @returns {Array<ChessPiece>}
      */
-    getPiecesFor(color) {
+    getPiecesFor(color, type = null) {
         const chessPieces = [];
         this.board.forEach(row => {
             row.forEach(piece => {
-                if (piece !== null && piece.color === color) {
-                    chessPieces.push(piece);
+                if ((piece !== null && piece.color === color)) {
+                    if (type === null || piece instanceof type) {
+                        chessPieces.push(piece);
+                    }
                 }
             });
         });

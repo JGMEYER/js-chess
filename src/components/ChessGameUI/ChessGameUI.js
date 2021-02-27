@@ -78,12 +78,10 @@ class ChessGameUI extends React.Component {
 
         this.setState(prev => ({
             ...prev,
+            chessBoardState: new ChessBoardState(this.state.chessBoardState.board),
             selectedPiece: null,
             currentPlayer: nextPlayer,
         }));
-
-        console.log('black', this.state.chessBoardState.kingInCheckmate(Color.BLACK));
-        console.log('white', this.state.chessBoardState.kingInCheckmate(Color.WHITE));
     }
 
     /**

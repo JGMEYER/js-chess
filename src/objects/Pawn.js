@@ -10,6 +10,7 @@ class Pawn extends ChessPiece {
         super(icon, color, row, col);
 
         this.hasMoved = false;
+        this.justMoved = false;
     }
 
     /**
@@ -19,6 +20,8 @@ class Pawn extends ChessPiece {
      */
     move(row, col) {
         super.move(row, col);
+
+        this.justMoved = !this.hasMoved ? true : false;
         this.hasMoved = true;
     }
 
@@ -59,6 +62,9 @@ class Pawn extends ChessPiece {
             }
         }
 
+        const leftPiece = chessBoardState.get(this.row, this.col - 1);
+        const rightPiece = chessBoardState.get(this.row, this.col + 1);
+
         // Take
         if (this.color === Color.WHITE) {
             // Top left
@@ -66,6 +72,11 @@ class Pawn extends ChessPiece {
                 const topLeftPiece = chessBoardState.get(this.row - 1, this.col - 1);
                 if (topLeftPiece && topLeftPiece.isEnemyOf(this.color)) {
                     validMoves.push(new Move([this.row, this.col], [this.row - 1, this.col - 1]));
+                } else if ((topLeftPiece && topLeftPiece.isEnemyOf(this.color)) || topLeftPiece === null) {
+                    // En passant
+                    if (leftPiece instanceof Pawn && leftPiece.justMoved) {
+                        validMoves.push(new Move([this.row, this.col], [this.row - 1, this.col - 1]));
+                    }
                 }
             }
             // Top right
@@ -73,6 +84,11 @@ class Pawn extends ChessPiece {
                 const topRightPiece = chessBoardState.get(this.row - 1, this.col + 1);
                 if (topRightPiece && topRightPiece.isEnemyOf(this.color)) {
                     validMoves.push(new Move([this.row, this.col], [this.row - 1, this.col + 1]));
+                } else if ((topRightPiece && topRightPiece.isEnemyOf(this.color)) || topRightPiece === null) {
+                    // En passant
+                    if (rightPiece instanceof Pawn && rightPiece.justMoved) {
+                        validMoves.push(new Move([this.row, this.col], [this.row - 1, this.col + 1]));
+                    }
                 }
             }
         } else if (this.color === Color.BLACK) {
@@ -81,6 +97,11 @@ class Pawn extends ChessPiece {
                 const bottomLeftPiece = chessBoardState.get(this.row + 1, this.col - 1);
                 if (bottomLeftPiece && bottomLeftPiece.isEnemyOf(this.color)) {
                     validMoves.push(new Move([this.row, this.col], [this.row + 1, this.col - 1]));
+                } else if ((bottomLeftPiece && bottomLeftPiece.isEnemyOf(this.color)) || bottomLeftPiece === null) {
+                    // En passant
+                    if (leftPiece instanceof Pawn && leftPiece.justMoved) {
+                        validMoves.push(new Move([this.row, this.col], [this.row + 1, this.col - 1]));
+                    }
                 }
             }
             // Bottom right
@@ -88,15 +109,35 @@ class Pawn extends ChessPiece {
                 const bottomRightPiece = chessBoardState.get(this.row + 1, this.col + 1);
                 if (bottomRightPiece && bottomRightPiece.isEnemyOf(this.color)) {
                     validMoves.push(new Move([this.row, this.col], [this.row + 1, this.col + 1]));
+                } else if ((bottomRightPiece && bottomRightPiece.isEnemyOf(this.color)) || bottomRightPiece === null) {
+                    // En passant
+                    if (rightPiece instanceof Pawn && rightPiece.justMoved) {
+                        validMoves.push(new Move([this.row, this.col], [this.row + 1, this.col + 1]));
+                    }
                 }
             }
         }
 
         validMoves.forEach(move => {
             move.execute = (chessBoardState) => {
-                chessBoardState.move(move);
-                // Queen promotion
                 const [row, col] = move.coordsAEnd;
+
+                // En passant
+                if (this.color === Color.WHITE) {
+                    const pieceBehind = chessBoardState.get(row + 1, col);
+                    if (pieceBehind instanceof Pawn && pieceBehind.justMoved) {
+                        chessBoardState.board[row + 1][col] = null;
+                    }
+                } else if (this.color === Color.BLACK) {
+                    const pieceBehind = chessBoardState.get(row - 1, col);
+                    if (pieceBehind instanceof Pawn && pieceBehind.justMoved) {
+                        chessBoardState.board[row - 1][col] = null;
+                    }
+                }
+
+                chessBoardState.move(move);
+
+                // Queen promotion
                 if (row === 0 || row === 7) {
                     chessBoardState.board[row][col] = new Queen(this.color, row, col);
                 }
