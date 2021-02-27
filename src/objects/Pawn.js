@@ -2,6 +2,7 @@ import ChessBoardState from './ChessBoardState';
 import ChessPiece from './ChessPiece';
 import Move from './Move';
 import Queen from './Queen';
+import { rowCol2FileRank } from '../utils/board';
 import Color from '../utils/color';
 
 class Pawn extends ChessPiece {
@@ -121,7 +122,17 @@ class Pawn extends ChessPiece {
 
         validMoves.forEach(move => {
             move.execute = (chessBoardState) => {
+                const [rowStart, colStart] = move.coordsAStart;
                 const [row, col] = move.coordsAEnd;
+
+                // Moved 2 spaces, mark for en passant
+                if (Math.abs(rowStart - row) === 2) {
+                    if (this.color === Color.WHITE) {
+                        chessBoardState.enPassantTarget = rowCol2FileRank([row + 1, col]);
+                    } else if (this.color === Color.BLACK) {
+                        chessBoardState.enPassantTarget = rowCol2FileRank([row - 1, col]);
+                    }
+                }
 
                 // En passant
                 if (this.color === Color.WHITE) {

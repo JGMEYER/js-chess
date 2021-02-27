@@ -31,6 +31,7 @@ class ChessBoardState {
         }
         this.currentPlayer = currentPlayer;
         this.enPassantTarget = '-';
+        this.halfMoveClock = 0;
         this.fullMoveNumber = 1;
     }
 
@@ -59,6 +60,7 @@ class ChessBoardState {
         ]
         this.currentPlayer = Color.WHITE;
         this.enPassantTarget = '-';
+        this.halfMoveClock = 0;
         this.fullMoveNumber = 1;
     }
 
@@ -73,6 +75,12 @@ class ChessBoardState {
         this.board[aR2][aC2] = pieceA;
         this.board[aR1][aC1] = null;
         pieceA.move(aR2, aC2);
+
+        if (pieceA instanceof Pawn || pieceA instanceof King) {
+            this.halfMoveClock = 0;
+        } else {
+            this.halfMoveClock++;
+        }
 
         // Reset en passant
         const enemyColor = this.board[aR2][aC2].color === Color.WHITE ? Color.BLACK : Color.WHITE;
@@ -222,8 +230,8 @@ class ChessBoardState {
         let fen = ranks.join('/');
 
         fen += this.currentPlayer === Color.WHITE ? ' w' : ' b';
-        fen += ' ';
 
+        fen += ' ';
         const whiteKing = this.getPiecesFor(Color.WHITE, King)[0];
         if (whiteKing.kingSideCastleAvailable(this)) {
             fen += 'K';
@@ -231,7 +239,6 @@ class ChessBoardState {
         if (whiteKing.queenSideCastleAvailable(this)) {
             fen += 'Q';
         }
-
         const blackKing = this.getPiecesFor(Color.BLACK, King)[0];
         if (blackKing.kingSideCastleAvailable(this)) {
             fen += 'k';
@@ -241,10 +248,7 @@ class ChessBoardState {
         }
 
         fen += ` ${this.enPassantTarget}`;
-
-        // Not implemented: Halfmove clock
-        fen += ' 0';
-
+        fen += ` ${this.halfMoveClock}`;
         fen += ` ${this.fullMoveNumber}`;
 
         return fen;
