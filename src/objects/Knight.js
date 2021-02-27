@@ -6,7 +6,8 @@ import Color from "../utils/color";
 class Knight extends ChessPiece {
     constructor(color, row, col) {
         const icon = '♞';
-        super(icon, color, row, col);
+        const notation = color === Color.WHITE ? 'N' : 'n';
+        super(icon, notation, color, row, col);
     }
 
     /**

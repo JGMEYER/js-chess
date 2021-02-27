@@ -1,13 +1,14 @@
 import ChessBoardState from './ChessBoardState';
 import ChessPiece from './ChessPiece';
 import Move from './Move';
-import Color from '../utils/color';
 import Queen from './Queen';
+import Color from '../utils/color';
 
 class Pawn extends ChessPiece {
     constructor(color, row, col) {
         const icon = '♟';
-        super(icon, color, row, col);
+        const notation = color === Color.WHITE ? 'P' : 'p';
+        super(icon, notation, color, row, col);
 
         this.hasMoved = false;
         this.justMoved = false;

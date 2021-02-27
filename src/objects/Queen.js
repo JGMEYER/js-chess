@@ -5,7 +5,8 @@ import Color from '../utils/color';
 class Queen extends ChessPiece {
     constructor(color, row, col) {
         const icon = '♛';
-        super(icon, color, row, col);
+        const notation = color === Color.WHITE ? 'Q' : 'q';
+        super(icon, notation, color, row, col);
     }
 
     /**

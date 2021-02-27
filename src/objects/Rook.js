@@ -5,7 +5,8 @@ import Color from '../utils/color';
 class Rook extends ChessPiece {
     constructor(color, row, col) {
         const icon = '♜';
-        super(icon, color, row, col);
+        const notation = color === Color.WHITE ? 'R' : 'r';
+        super(icon, notation, color, row, col);
 
         this.hasMoved = false;
     }

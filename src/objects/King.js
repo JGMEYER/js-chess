@@ -7,7 +7,8 @@ import Color from '../utils/color';
 class King extends ChessPiece {
     constructor(color, row, col) {
         const icon = '♚';
-        super(icon, color, row, col);
+        const notation = color === Color.WHITE ? 'K' : 'k';
+        super(icon, notation, color, row, col);
 
         this.hasMoved = false;
     }
@@ -23,15 +24,24 @@ class King extends ChessPiece {
     }
 
     /**
+     * Returns whether queenside castle still available.
+     * @param {ChessBoardState} chessBoardState
+     */
+    queenSideCastleAvailable(chessBoardState) {
+        let row = this.color === Color.WHITE ? 7 : 0;
+        const leftMostPiece = chessBoardState.get(row, 0);
+        return !this.hasMoved && leftMostPiece !== null && leftMostPiece instanceof Rook && !leftMostPiece.hasMoved;
+    }
+
+    /**
      * Returns whether king can queenside castle
      * @param {ChessBoardState} chessBoardState
      */
     canQueenSideCastle(chessBoardState) {
         // 1. The castling must be queenside
         let row = this.color === Color.WHITE ? 7 : 0;
-        const leftMostPiece = chessBoardState.get(row, 0);
         // 2. Neither the king nor the chosen rook has previously moved
-        if (this.hasMoved || leftMostPiece === null || !leftMostPiece instanceof Rook || leftMostPiece.hasMoved) {
+        if (!this.queenSideCastleAvailable(chessBoardState)) {
             return false;
         }
         // 3. There are no pieces between the king and the chosen rook
@@ -56,6 +66,16 @@ class King extends ChessPiece {
     }
 
     /**
+     * Returns whether kingside castle still available.
+     * @param {ChessBoardState} chessBoardState
+     */
+    kingSideCastleAvailable(chessBoardState) {
+        let row = this.color === Color.WHITE ? 7 : 0;
+        const rightMostPiece = chessBoardState.get(row, 7);
+        return !this.hasMoved && rightMostPiece !== null && rightMostPiece instanceof Rook && !rightMostPiece.hasMoved;
+    }
+
+    /**
      * Returns whether king can kingside castle
      * @param {ChessBoardState} chessBoardState
      */
@@ -64,7 +84,7 @@ class King extends ChessPiece {
         let row = this.color === Color.WHITE ? 7 : 0;
         const rightMostPiece = chessBoardState.get(row, 7);
         // 2. Neither the king nor the chosen rook has previously moved
-        if (this.hasMoved || rightMostPiece === null || !rightMostPiece instanceof Rook || rightMostPiece.hasMoved) {
+        if (!this.kingSideCastleAvailable(chessBoardState)) {
             return false;
         }
         // 3. There are no pieces between the king and the chosen rook

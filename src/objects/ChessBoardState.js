@@ -14,7 +14,7 @@ import Color from '../utils/color';
  * Handles the state of the chess board and its pieces.
  */
 class ChessBoardState {
-    constructor(board) {
+    constructor(board, currentPlayer = Color.WHITE) {
         if (board) {
             this.board = board;
         } else {
@@ -29,6 +29,9 @@ class ChessBoardState {
                 [null, null, null, null, null, null, null, null],
             ]
         }
+        this.currentPlayer = currentPlayer;
+        this.enPassantTarget = '-';
+        this.fullMoveNumber = 1;
     }
 
     /**
@@ -54,6 +57,9 @@ class ChessBoardState {
             [new Pawn(Color.WHITE, 6, 0), new Pawn(Color.WHITE, 6, 1), new Pawn(Color.WHITE, 6, 2), new Pawn(Color.WHITE, 6, 3), new Pawn(Color.WHITE, 6, 4), new Pawn(Color.WHITE, 6, 5), new Pawn(Color.WHITE, 6, 6), new Pawn(Color.WHITE, 6, 7)],
             [new Rook(Color.WHITE, 7, 0), new Knight(Color.WHITE, 7, 1), new Bishop(Color.WHITE, 7, 2), new Queen(Color.WHITE, 7, 3), new King(Color.WHITE, 7, 4), new Bishop(Color.WHITE, 7, 5), new Knight(Color.WHITE, 7, 6), new Rook(Color.WHITE, 7, 7)],
         ]
+        this.currentPlayer = Color.WHITE;
+        this.enPassantTarget = '-';
+        this.fullMoveNumber = 1;
     }
 
     /**
@@ -80,6 +86,13 @@ class ChessBoardState {
             this.board[bR2][bC2] = pieceB;
             this.board[bR1][bC1] = null;
             pieceB.move(bR2, bC2);
+        }
+
+        this.currentPlayer = this.currentPlayer === Color.WHITE
+            ? Color.BLACK
+            : Color.WHITE;
+        if (this.currentPlayer === Color.WHITE) {
+            this.fullMoveNumber++;
         }
     }
 
@@ -179,6 +192,62 @@ class ChessBoardState {
             });
         });
         return chessPieces;
+    }
+
+    /**
+     * Returns Forsyth–Edwards Notation for board state.
+     */
+    toFEN() {
+        let ranks = [];
+        this.board.forEach(rank => {
+            let rankStr = '';
+            let emptySpaces = 0;
+            rank.forEach(piece => {
+                if (piece === null) {
+                    emptySpaces++;
+                } else {
+                    if (emptySpaces) {
+                        rankStr += emptySpaces;
+                        emptySpaces = 0;
+                    }
+                    rankStr += piece.notation;
+                }
+            });
+            if (emptySpaces) {
+                rankStr += emptySpaces;
+            }
+            ranks.push(rankStr);
+        });
+
+        let fen = ranks.join('/');
+
+        fen += this.currentPlayer === Color.WHITE ? ' w' : ' b';
+        fen += ' ';
+
+        const whiteKing = this.getPiecesFor(Color.WHITE, King)[0];
+        if (whiteKing.kingSideCastleAvailable(this)) {
+            fen += 'K';
+        }
+        if (whiteKing.queenSideCastleAvailable(this)) {
+            fen += 'Q';
+        }
+
+        const blackKing = this.getPiecesFor(Color.BLACK, King)[0];
+        if (blackKing.kingSideCastleAvailable(this)) {
+            fen += 'k';
+        }
+        if (blackKing.queenSideCastleAvailable(this)) {
+            fen += 'q';
+        }
+
+        fen += ` ${this.enPassantTarget}`;
+
+        // Not implemented: Halfmove clock
+        fen += ' 0';
+
+        fen += ` ${this.fullMoveNumber}`;
+
+        return fen;
     }
 
     /**

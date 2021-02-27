@@ -5,7 +5,8 @@ import Color from '../utils/color';
 class Bishop extends ChessPiece {
     constructor(color, row, col) {
         const icon = '♝';
-        super(icon, color, row, col);
+        const notation = color === Color.WHITE ? 'B' : 'b';
+        super(icon, notation, color, row, col);
     }
 
     /**
