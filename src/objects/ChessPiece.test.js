@@ -1,8 +1,4 @@
-import Bishop from './Bishop';
-import King from './King';
-import Knight from './Knight';
 import Move from './Move';
-import Color from '../utils/color';
 import ChessBoardState from '../objects/ChessBoardState';
 
 describe('ChessPiece.js', () => {
