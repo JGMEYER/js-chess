@@ -100,4 +100,46 @@ describe('ChessBoardState.js', () => {
             expect(actual).toEqual(expected);
         });
     });
+
+    describe('FEN castling', () => {
+        test('white king side castle invalidates white castles', () => {
+            const chessBoardState = ChessBoardState.fromFEN('rnbqk2r/ppppppbp/6pn/8/8/6PN/PPPPPPBP/RNBQK2R w KQkq - 2 4');
+            const whiteKing = chessBoardState.getFileRank('e1');
+            const kingSideCastle = whiteKing.validMoves(chessBoardState)[1];
+            kingSideCastle.execute(chessBoardState);
+            expect(chessBoardState.availableCastles).toEqual('kq');
+        });
+
+        test('black king side castle invalidates black castles', () => {
+            const chessBoardState = ChessBoardState.fromFEN('rnbqk2r/ppppppbp/6pn/8/6P1/7N/PPPPPPBP/RNBQK2R b KQkq - 0 4');
+            const blackKing = chessBoardState.getFileRank('e8');
+            const kingSideCastle = blackKing.validMoves(chessBoardState)[1];
+            kingSideCastle.execute(chessBoardState);
+            expect(chessBoardState.availableCastles).toEqual('KQ');
+        });
+
+        test('black then white king side castle invalidates all castles', () => {
+            const chessBoardState = ChessBoardState.fromFEN('rnbq1rk1/ppppppbp/6pn/8/6P1/7N/PPPPPPBP/RNBQK2R w KQ - 1 5');
+            const whiteKing = chessBoardState.getFileRank('e1');
+            const kingSideCastle = whiteKing.validMoves(chessBoardState)[1];
+            kingSideCastle.execute(chessBoardState);
+            expect(chessBoardState.availableCastles).toEqual('-');
+        });
+
+        test('white queen side castle invalidates white castles', () => {
+            const chessBoardState = ChessBoardState.fromFEN('r3kbnr/p1pp1ppp/bpn1pq2/8/8/BPN1PQ2/P1PP1PPP/R3KBNR w KQkq - 2 6');
+            const whiteKing = chessBoardState.getFileRank('e1');
+            const kingSideCastle = whiteKing.validMoves(chessBoardState)[1];
+            kingSideCastle.execute(chessBoardState);
+            expect(chessBoardState.availableCastles).toEqual('kq');
+        });
+
+        test('white then black queen side castle invalidates all castles', () => {
+            const chessBoardState = ChessBoardState.fromFEN('r3kbnr/p1pp1ppp/bpn1pq2/8/8/BPN1PQ2/P1PP1PPP/2KR1BNR b kq - 3 6');
+            const blackKing = chessBoardState.getFileRank('e8');
+            const kingSideCastle = blackKing.validMoves(chessBoardState)[1];
+            kingSideCastle.execute(chessBoardState);
+            expect(chessBoardState.availableCastles).toEqual('-');
+        });
+    });
 });

@@ -8,6 +8,7 @@ import Queen from './Queen';
 import King from './King';
 import ChessPiece from './ChessPiece';
 import Move from './Move';
+import { fileRank2RowCol } from '../utils/board';
 import Color from '../utils/color';
 
 /**
@@ -38,6 +39,15 @@ class ChessBoardState {
      * @param {number} col
      */
     get(row, col) {
+        return this.board[row][col];
+    }
+
+    /**
+     * Returns the piece at (file, rank).
+     * @param {string} fileRank
+     */
+    getFileRank(fileRank) {
+        const [row, col] = fileRank2RowCol(fileRank);
         return this.board[row][col];
     }
 
@@ -124,6 +134,10 @@ class ChessBoardState {
      */
     invalidateCastle(castleCode) {
         this.availableCastles = this.availableCastles.replace(castleCode, '');
+
+        if (!this.availableCastles) {
+            this.availableCastles = '-';
+        }
     }
 
     /**

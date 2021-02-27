@@ -138,19 +138,6 @@ class King extends ChessPiece {
             return false;
         });
 
-        validMoves.forEach(move => {
-            move.execute = (chessBoardState) => {
-                if (this.color.WHITE) {
-                    chessBoardState.invalidateCastle('KQ');
-                } else if (this.color.BLACK) {
-                    chessBoardState.invalidateCastle('kq');
-                }
-
-                chessBoardState.move(move);
-                chessBoardState.enPassantTarget = '-';
-            }
-        });
-
         if (checkIfKingInCheck) {
             if (this.canQueenSideCastle(chessBoardState)) {
                 let row = this.color === Color.WHITE ? 7 : 0;
@@ -167,7 +154,22 @@ class King extends ChessPiece {
                     [row, 7], [row, 5], // right rook
                 ));
             }
+        }
 
+        validMoves.forEach(move => {
+            move.execute = (chessBoardState) => {
+                if (this.color === Color.WHITE) {
+                    chessBoardState.invalidateCastle('KQ');
+                } else if (this.color === Color.BLACK) {
+                    chessBoardState.invalidateCastle('kq');
+                }
+
+                chessBoardState.move(move);
+                chessBoardState.enPassantTarget = '-';
+            }
+        });
+
+        if (checkIfKingInCheck) {
             return validMoves.filter(move =>
                 !chessBoardState.kingWouldBeInCheck(this.color, move)
             );

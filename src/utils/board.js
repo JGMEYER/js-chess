@@ -36,7 +36,7 @@ export function fileRank2RowCol(fileRank) {
     if (file < 'a' || file > 'h') {
         throw RangeError('File out of bounds');
     }
-    if (rank < 0 || rank > 7) {
+    if (rank < 1 || rank > 8) {
         throw RangeError('Rank out of bounds');
     }
 
