@@ -80,10 +80,7 @@ class ChessGameUI extends React.Component {
 
         this.setState(prev => ({
             ...prev,
-            chessBoardState: new ChessBoardState(
-                this.state.chessBoardState.board,
-                nextPlayer,
-            ),
+            chessBoardState: ChessBoardState.fromFEN(this.state.chessBoardState.toFEN()),
             selectedPiece: null,
             currentPlayer: nextPlayer,
         }));

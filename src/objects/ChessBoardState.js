@@ -84,11 +84,6 @@ class ChessBoardState {
             this.halfMoveClock++;
         }
 
-        // Reset en passant
-        const enemyColor = this.board[aR2][aC2].color === Color.WHITE ? Color.BLACK : Color.WHITE;
-        const pawns = this.getPiecesFor(enemyColor, Pawn);
-        pawns.forEach(pawn => pawn.justMoved = false);
-
         if (move.coordsBStart !== null && move.coordsBEnd !== null) {
             const [bR1, bC1] = move.coordsBStart;
             const [bR2, bC2] = move.coordsBEnd;
@@ -104,6 +99,15 @@ class ChessBoardState {
         if (this.currentPlayer === Color.WHITE) {
             this.fullMoveNumber++;
         }
+    }
+
+    /**
+     * Remove piece from board.
+     * @param {number} row
+     * @param {number} col
+     */
+    removePiece(row, col) {
+        this.board[row][col] = null;
     }
 
     /**
@@ -292,6 +296,7 @@ class ChessBoardState {
                 break;
             case 'b':
                 chessBoardState.currentPlayer = Color.BLACK;
+                break;
             default:
                 throw new Error('Invalid active color notation')
         }
