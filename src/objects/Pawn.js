@@ -6,7 +6,7 @@ import Queen from './Queen';
 
 class Pawn extends ChessPiece {
     constructor(color, row, col) {
-        const icon = color === Color.WHITE ? '♙' : '♟';
+        const icon = '♟';
         super(icon, color, row, col);
 
         this.hasMoved = false;

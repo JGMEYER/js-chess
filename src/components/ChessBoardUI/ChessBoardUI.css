@@ -4,6 +4,10 @@
     grid-template-columns: repeat(8, 50px);
 }
 
+.chess-board div {
+    background-color: hsl(32, 55%, 75%);
+}
+
 .chess-board div:nth-child(-2n+8),
 .chess-board div:nth-child(8) ~ div:nth-child(-2n+15),
 .chess-board div:nth-child(16) ~ div:nth-child(-2n+24),
@@ -12,5 +16,5 @@
 .chess-board div:nth-child(40) ~ div:nth-child(-2n+47),
 .chess-board div:nth-child(48) ~ div:nth-child(-2n+56),
 .chess-board div:nth-child(56) ~ div:nth-child(-2n+63) {
-    background-color: #ccc;
+    background-color: hsl(18, 28%, 49%);
 }

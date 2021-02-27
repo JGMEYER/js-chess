@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import './ChessPieceUI.css';
+import Color from '../../utils/color';
 
 /**
  * A chess piece on the game board.
@@ -22,6 +23,9 @@ class ChessPieceUI extends React.Component {
      */
     render() {
         let className = "chess-piece";
+        if (this.props.piece.color === Color.WHITE) {
+            className += " white";
+        }
         if (this.props.isInCheck) {
             className += " in-check";
         }
