@@ -1,0 +1,11 @@
+.fen-form {
+    margin-top: 20px;
+}
+
+.fen-form label {
+    margin-right: 10px;
+}
+
+.fen-form-error {
+    color: red;
+}

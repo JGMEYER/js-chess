@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import './FENFormUI.css';
+import ChessBoardState from '../../objects/ChessBoardState';
+
 class FENFormUI extends React.Component {
     constructor(props) {
         super(props);
@@ -11,28 +14,45 @@ class FENFormUI extends React.Component {
     }
 
     handleChange(e) {
-        this.setState({ fenCode: e.target.value });
+        this.setState(prev => ({
+            ...prev,
+            fenCode: e.target.value,
+            errorStr: '',
+        }));
     }
 
     handleSubmit(e) {
         e.preventDefault();
+        try {
+            ChessBoardState.fromFEN(this.state.fenCode);
+        } catch (error) {
+            this.setState(prev => ({
+                ...prev,
+                errorStr: error.message,
+            }));
+            return;
+        }
         this.props.updateBoard(this.state.fenCode);
     }
 
     render() {
         return (
-            <form className="fen-form" onSubmit={this.handleSubmit}>
-                <label htmlFor="fen-input">FEN</label>
-                <input
-                    className="fen-input"
-                    name="fen-input"
-                    type="text"
-                    size="87"
-                    value={this.state.fenCode}
-                    onChange={this.handleChange}
-                >
-                </input>
-            </form>
+            <div>
+                <form className="fen-form" onSubmit={this.handleSubmit}>
+                    <label htmlFor="fen-input">FEN</label>
+                    <input
+                        className="fen-input"
+                        name="fen-input"
+                        type="text"
+                        size="87"
+                        maxLength="87"
+                        value={this.state.fenCode}
+                        onChange={this.handleChange}
+                    >
+                    </input>
+                </form>
+                <p className="fen-form-error">{this.state.errorStr}</p>
+            </div>
         )
     }
 }
