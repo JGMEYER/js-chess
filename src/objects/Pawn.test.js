@@ -12,7 +12,6 @@ describe('Pawn.js', () => {
             const whiteKing = new King(Color.WHITE, 7, 4);
 
             const whitePawn = new Pawn(Color.WHITE, 3, 6);
-            whitePawn.hasMoved = true;
             const blackPawn = new Pawn(Color.BLACK, 1, 7);
 
             const chessBoardState = new ChessBoardState();

@@ -9,128 +9,57 @@ describe('King.js', () => {
 
     describe('validMoves()', () => {
         test('white queenside castle', () => {
-            const leftRook = new Rook(Color.WHITE, 7, 0);
-            const king = new King(Color.WHITE, 7, 4);
-            const rightRook = new Rook(Color.WHITE, 7, 7);
-            const board = [
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [leftRook, null, null, null, king, null, null, rightRook],
-            ]
-            const chessBoardState = new ChessBoardState(board);
+            const chessBoardState = ChessBoardState.fromFEN('8/8/8/8/8/8/8/R3K2R w KQ - 0 1')
+            const king = chessBoardState.getFileRank('e1');
+            const leftRook = chessBoardState.getFileRank('a1');
             const move = king.validMoves(chessBoardState)[5];
             chessBoardState.move(move);
 
-            expect(board[7][2]).toEqual(king);
-            expect(board[7][3]).toEqual(leftRook);
+            expect(chessBoardState.getFileRank('c1')).toEqual(king);
+            expect(chessBoardState.getFileRank('d1')).toEqual(leftRook);
         });
 
         test('white kingside castle', () => {
-            const leftRook = new Rook(Color.WHITE, 7, 0);
-            const king = new King(Color.WHITE, 7, 4);
-            const rightRook = new Rook(Color.WHITE, 7, 7);
-            const board = [
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [leftRook, null, null, null, king, null, null, rightRook],
-            ]
-            const chessBoardState = new ChessBoardState(board);
+            const chessBoardState = ChessBoardState.fromFEN('8/8/8/8/8/8/8/R3K2R w KQ - 0 1')
+            const king = chessBoardState.getFileRank('e1');
+            const rightRook = chessBoardState.getFileRank('h1');
             const move = king.validMoves(chessBoardState)[6];
             chessBoardState.move(move);
 
-            expect(board[7][6]).toEqual(king);
-            expect(board[7][5]).toEqual(rightRook);
+            expect(chessBoardState.getFileRank('g1')).toEqual(king);
+            expect(chessBoardState.getFileRank('f1')).toEqual(rightRook);
         });
     });
 
     describe('canQueenSideCastle()', () => {
         test('2. Neither the king nor the chosen rook has previously moved', () => {
-            const leftRook = new Rook(Color.WHITE, 7, 0);
-            const king = new King(Color.WHITE, 7, 4);
-            const board = [
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [leftRook, null, null, null, king, null, null, null],
-            ]
-            const chessBoardState = new ChessBoardState(board);
+            const chessBoardState = ChessBoardState.fromFEN('8/8/8/8/8/8/8/R3K2R w KQ - 0 1')
+            const king = chessBoardState.getFileRank('e1');
+            const leftRook = chessBoardState.getFileRank('a1');
 
             expect(king.canQueenSideCastle(chessBoardState)).toBe(true);
 
             // Move rook forward and back
             const rookMoveUp = leftRook.validMoves(chessBoardState)[0];
+            const rookMoveBack = new Move([6, 0], [7, 0]);
             rookMoveUp.execute(chessBoardState);
             expect(king.canQueenSideCastle(chessBoardState)).toBe(false);
-            chessBoardState.move(new Move([6, 0], [7, 0]));
+            rookMoveBack.execute(chessBoardState);
             expect(king.canQueenSideCastle(chessBoardState)).toBe(false);
         });
 
         test('3. There are no pieces between the king and the chosen rook', () => {
-            const leftRook = new Rook(Color.WHITE, 7, 0);
-            const king = new King(Color.WHITE, 7, 4);
-
-            const chessBoardState = new ChessBoardState();
-
-            chessBoardState.board = [
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [leftRook, null, null, null, king, null, null, null],
-            ]
+            let chessBoardState = ChessBoardState.fromFEN('8/8/8/8/8/8/8/R3K2R w KQ - 0 1')
+            const king = chessBoardState.getFileRank('e1');
             expect(king.canQueenSideCastle(chessBoardState)).toBe(true);
 
-            chessBoardState.board = [
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [leftRook, new Knight(Color.BLACK, 7, 1), null, null, king, null, null, null],
-            ]
+            chessBoardState = ChessBoardState.fromFEN('8/8/8/8/8/8/8/RN2K2R w KQ - 0 1')
             expect(king.canQueenSideCastle(chessBoardState)).toBe(false);
 
-            chessBoardState.board = [
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [leftRook, null, new Knight(Color.BLACK, 7, 2), null, king, null, null, null],
-            ]
+            chessBoardState = ChessBoardState.fromFEN('8/8/8/8/8/8/8/R1N1K2R w KQ - 0 1')
             expect(king.canQueenSideCastle(chessBoardState)).toBe(false);
 
-            chessBoardState.board = [
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [leftRook, null, null, new Knight(Color.BLACK, 7, 3), king, null, null, null],
-            ]
+            chessBoardState = ChessBoardState.fromFEN('8/8/8/8/8/8/8/R1NK2R w KQ - 0 1')
             expect(king.canQueenSideCastle(chessBoardState)).toBe(false);
         });
 
@@ -187,70 +116,30 @@ describe('King.js', () => {
 
     describe('canKingSideCastle()', () => {
         test('2. Neither the king nor the chosen rook has previously moved', () => {
-            const rightRook = new Rook(Color.WHITE, 7, 7);
-            const king = new King(Color.WHITE, 7, 4);
-            const board = [
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, king, null, null, rightRook],
-            ]
-            const chessBoardState = new ChessBoardState(board);
+            const chessBoardState = ChessBoardState.fromFEN('8/8/8/8/8/8/8/R3K2R w KQ - 0 1')
+            const king = chessBoardState.getFileRank('e1');
+            const rightRook = chessBoardState.getFileRank('h1');
 
             expect(king.canKingSideCastle(chessBoardState)).toBe(true);
 
             // Move rook forward and back
-            const rookMoveDown = rightRook.validMoves(chessBoardState)[0];
-            rookMoveDown.execute(chessBoardState);
+            const rookMoveUp = rightRook.validMoves(chessBoardState)[0];
+            const rookMoveBack = new Move([6, 7], [7, 7]);
+            rookMoveUp.execute(chessBoardState);
             expect(king.canKingSideCastle(chessBoardState)).toBe(false);
-            chessBoardState.move(new Move([6, 7], [7, 7]));
+            rookMoveBack.execute(chessBoardState);
             expect(king.canKingSideCastle(chessBoardState)).toBe(false);
         });
 
         test('3. There are no pieces between the king and the chosen rook', () => {
-            const rightRook = new Rook(Color.WHITE, 7, 7);
-            const king = new King(Color.WHITE, 7, 4);
-
-            const chessBoardState = new ChessBoardState();
-
-            chessBoardState.board = [
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, king, null, null, rightRook],
-            ]
+            let chessBoardState = ChessBoardState.fromFEN('8/8/8/8/8/8/8/R3K2R w KQ - 0 1')
+            const king = chessBoardState.getFileRank('e1');
             expect(king.canKingSideCastle(chessBoardState)).toBe(true);
 
-            chessBoardState.board = [
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, king, new Knight(Color.BLACK, 7, 5), null, rightRook],
-            ]
+            chessBoardState = ChessBoardState.fromFEN('8/8/8/8/8/8/8/R3KN1R w KQ - 0 1')
             expect(king.canKingSideCastle(chessBoardState)).toBe(false);
 
-            chessBoardState.board = [
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, king, null, new Knight(Color.BLACK, 7, 5), rightRook],
-            ]
+            chessBoardState = ChessBoardState.fromFEN('8/8/8/8/8/8/8/R3K1NR w KQ - 0 1')
             expect(king.canKingSideCastle(chessBoardState)).toBe(false);
         });
 

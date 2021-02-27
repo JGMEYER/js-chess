@@ -41,7 +41,8 @@ describe('ChessBoardState.js', () => {
                     }
                 });
             });
-            const chessBoardState = new ChessBoardState(board);
+            const chessBoardState = new ChessBoardState();
+            chessBoardState.board = board;
             chessBoardState.currentPlayer = Color.WHITE;
             chessBoardState.availableCastles = 'Q';
             chessBoardState.enPassantTarget = 'f6';
