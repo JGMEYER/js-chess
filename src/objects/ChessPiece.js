@@ -95,14 +95,23 @@ class ChessPiece {
 
             if (pieceAtTarget) {
                 if (pieceAtTarget.isEnemyOf(this.color)) {
-                    validMoves.push(move);
+                    if (checkIfKingInCheck) {
+                        if (!chessBoardState.kingWouldBeInCheck(this.color, move)) {
+                            validMoves.push(move);
+                        }
+                    } else {
+                        validMoves.push(move);
+                    }
                 }
                 break;
-            } else if (checkIfKingInCheck
-                && chessBoardState.kingWouldBeInCheck(this.color, move)) {
-                // do nothing
             } else {
-                validMoves.push(move);
+                if (checkIfKingInCheck) {
+                    if (!chessBoardState.kingWouldBeInCheck(this.color, move)) {
+                        validMoves.push(move);
+                    }
+                } else {
+                    validMoves.push(move);
+                }
             }
             row += rowInc;
             col += colInc;
