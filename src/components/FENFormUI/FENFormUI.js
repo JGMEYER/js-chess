@@ -14,18 +14,16 @@ class FENFormUI extends React.Component {
     }
 
     /**
-     * Update state when props changed
-     * @param {object} props
-     * @param {object} currentState
+     * Save props into state on update.
+     * @param {object} prevProps
      */
-    static getDerivedStateFromProps(props, currentState) {
-        if (currentState.fenCode !== props.fenCode) {
-            return {
-                ...currentState,
-                fenCode: props.fenCode,
-            }
+    componentDidUpdate(prevProps) {
+        if (prevProps.fenCode !== this.props.fenCode) {
+            this.setState(prev => ({
+                ...prev,
+                fenCode: this.props.fenCode,
+            }));
         }
-        return null;
     }
 
     /**
