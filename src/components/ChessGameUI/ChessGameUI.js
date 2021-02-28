@@ -47,7 +47,7 @@ class ChessGameUI extends React.Component {
             if (!bestMove && !this.state.stockfish.isThinking) {
                 this.state.stockfish.searchBestMove(this.state.chessBoardState, this.state.stockfishDepth);
             } else if (bestMove) {
-                this.state.chessBoardState.stockfishMove(bestMove)
+                this.state.chessBoardState.move(bestMove)
                 this.state.stockfish.bestMove = null;
 
                 this.setState(prev => ({
@@ -94,10 +94,12 @@ class ChessGameUI extends React.Component {
         const validMoves = this.state.selectedPiece.validMoves(
             this.state.chessBoardState
         )
-        const move = validMoves.filter(move =>
-            move.coordsAEnd[0] === row && move.coordsAEnd[1] === col)[0];
+        const move = validMoves.filter(move => {
+            const [toR, toC] = move.toToRowCol();
+            return toR === row && toC === col
+        })[0];
         if (move) {
-            move.execute(this.state.chessBoardState);
+            this.state.chessBoardState.move(move);
         } else {
             console.log('Invalid move');
         }
@@ -128,7 +130,6 @@ class ChessGameUI extends React.Component {
      */
     render() {
         const chessPieces = this.state.chessBoardState.getPieces();
-        this.state.chessBoardState.print();
         return (
             <div>
                 <ChessBoardUI movePiece={this.movePiece} />
