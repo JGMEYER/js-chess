@@ -1,3 +1,5 @@
+import ChessBoardState from './ChessBoardState';
+
 class Stockfish {
     constructor() {
         this.stockfish = new Worker('stockfish.js');
@@ -26,10 +28,19 @@ class Stockfish {
         this.stockfish.postMessage('ucinewgame');
     }
 
+    /**
+     * Update engine state to fenCode.
+     * @param {string} fenCode
+     */
     setFEN(fenCode) {
         this.stockfish.postMessage(`position fen ${fenCode}`);
     }
 
+    /**
+     * Start churning for best move.
+     * @param {ChessBoardState} chessBoardState
+     * @param {number} depth
+     */
     searchBestMove(chessBoardState, depth = 10) {
         this.bestMove = null;
         this.isThinking = true;
@@ -38,6 +49,9 @@ class Stockfish {
         this.stockfish.postMessage(`go depth ${depth}`);
     }
 
+    /**
+     * Returns best move if one has been found.
+     */
     getBestMove() {
         return this.isThinking ? null : this.bestMove;
     }
