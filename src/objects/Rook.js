@@ -29,31 +29,7 @@ class Rook extends ChessPiece {
         const downMoves = this._validMovesAlongLine(chessBoardState, 1, 0, checkIfKingInCheck)
         const rightMoves = this._validMovesAlongLine(chessBoardState, 0, 1, checkIfKingInCheck);
         const leftMoves = this._validMovesAlongLine(chessBoardState, 0, -1, checkIfKingInCheck)
-        const validMoves = [...upMoves, ...rightMoves, ...downMoves, ...leftMoves];
-
-        validMoves.forEach(move => {
-            move.execute = (chessBoardState) => {
-                const [rowStart, colStart] = move.coordsAStart;
-
-                if (rowStart === 7 && colStart === 7) {
-                    chessBoardState.invalidateCastle('K');
-                }
-                else if (rowStart === 7 && colStart === 0) {
-                    chessBoardState.invalidateCastle('Q');
-                }
-                else if (rowStart === 0 && colStart === 7) {
-                    chessBoardState.invalidateCastle('k')
-                }
-                else if (rowStart === 0 && colStart === 0) {
-                    chessBoardState.invalidateCastle('q')
-                }
-
-                chessBoardState.move(move);
-                chessBoardState.enPassantTarget = '-';
-            }
-        });
-
-        return validMoves;
+        return [...upMoves, ...rightMoves, ...downMoves, ...leftMoves];
     }
 }
 

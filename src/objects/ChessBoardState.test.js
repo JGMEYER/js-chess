@@ -3,7 +3,6 @@ import ChessBoardState from "./ChessBoardState";
 import ChessPiece from "./ChessPiece";
 import King from "./King";
 import Knight from "./Knight";
-import Move from "./Move";
 import Pawn from "./Pawn";
 import Rook from "./Rook";
 import Queen from "./Queen";
@@ -81,21 +80,23 @@ describe('ChessBoardState.js', () => {
             let actual = chessBoardState.toFEN();
             expect(actual).toEqual(expected);
 
-            const whitePawn = chessBoardState.get(6, 4);
+            const whitePawn = chessBoardState.getFileRank('e2');
             const white2Spaces = whitePawn.validMoves(chessBoardState)[1];
-            white2Spaces.execute(chessBoardState);
+            chessBoardState.move(white2Spaces);
             expected = 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1';
             actual = chessBoardState.toFEN();
             expect(actual).toEqual(expected);
 
-            const blackPawn = chessBoardState.get(1, 2);
+            const blackPawn = chessBoardState.getFileRank('c7');
             const black2Spaces = blackPawn.validMoves(chessBoardState)[1];
-            black2Spaces.execute(chessBoardState);
+            chessBoardState.move(black2Spaces);
             expected = 'rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2';
             actual = chessBoardState.toFEN();
             expect(actual).toEqual(expected);
 
-            new Move([7, 6], [5, 5]).execute(chessBoardState);
+            const rightWhiteKnight = chessBoardState.getFileRank('g1');
+            const rightWhiteKnightUpperLeft = rightWhiteKnight.validMoves(chessBoardState)[0];
+            chessBoardState.move(rightWhiteKnightUpperLeft);
             expected = 'rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2';
             actual = chessBoardState.toFEN();
             expect(actual).toEqual(expected);
@@ -107,7 +108,7 @@ describe('ChessBoardState.js', () => {
             const chessBoardState = ChessBoardState.fromFEN('rnbqk2r/ppppppbp/6pn/8/8/6PN/PPPPPPBP/RNBQK2R w KQkq - 2 4');
             const whiteKing = chessBoardState.getFileRank('e1');
             const kingSideCastle = whiteKing.validMoves(chessBoardState)[1];
-            kingSideCastle.execute(chessBoardState);
+            chessBoardState.move(kingSideCastle);
             expect(chessBoardState.availableCastles).toEqual('kq');
         });
 
@@ -115,7 +116,7 @@ describe('ChessBoardState.js', () => {
             const chessBoardState = ChessBoardState.fromFEN('rnbqk2r/ppppppbp/6pn/8/6P1/7N/PPPPPPBP/RNBQK2R b KQkq - 0 4');
             const blackKing = chessBoardState.getFileRank('e8');
             const kingSideCastle = blackKing.validMoves(chessBoardState)[1];
-            kingSideCastle.execute(chessBoardState);
+            chessBoardState.move(kingSideCastle);
             expect(chessBoardState.availableCastles).toEqual('KQ');
         });
 
@@ -123,7 +124,7 @@ describe('ChessBoardState.js', () => {
             const chessBoardState = ChessBoardState.fromFEN('rnbq1rk1/ppppppbp/6pn/8/6P1/7N/PPPPPPBP/RNBQK2R w KQ - 1 5');
             const whiteKing = chessBoardState.getFileRank('e1');
             const kingSideCastle = whiteKing.validMoves(chessBoardState)[1];
-            kingSideCastle.execute(chessBoardState);
+            chessBoardState.move(kingSideCastle);
             expect(chessBoardState.availableCastles).toEqual('-');
         });
 
@@ -131,7 +132,7 @@ describe('ChessBoardState.js', () => {
             const chessBoardState = ChessBoardState.fromFEN('r3kbnr/p1pp1ppp/bpn1pq2/8/8/BPN1PQ2/P1PP1PPP/R3KBNR w KQkq - 2 6');
             const whiteKing = chessBoardState.getFileRank('e1');
             const kingSideCastle = whiteKing.validMoves(chessBoardState)[1];
-            kingSideCastle.execute(chessBoardState);
+            chessBoardState.move(kingSideCastle);
             expect(chessBoardState.availableCastles).toEqual('kq');
         });
 
@@ -139,7 +140,7 @@ describe('ChessBoardState.js', () => {
             const chessBoardState = ChessBoardState.fromFEN('r3kbnr/p1pp1ppp/bpn1pq2/8/8/BPN1PQ2/P1PP1PPP/2KR1BNR b kq - 3 6');
             const blackKing = chessBoardState.getFileRank('e8');
             const kingSideCastle = blackKing.validMoves(chessBoardState)[1];
-            kingSideCastle.execute(chessBoardState);
+            chessBoardState.move(kingSideCastle);
             expect(chessBoardState.availableCastles).toEqual('-');
         });
     });

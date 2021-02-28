@@ -36,16 +36,16 @@ class King extends ChessPiece {
      */
     canQueenSideCastle(chessBoardState) {
         // 1. The castling must be queenside
-        let row = this.color === Color.WHITE ? 7 : 0;
+        let rank = this.color === Color.WHITE ? 1 : 8;
         // 2. Neither the king nor the chosen rook has previously moved
         if (!this.queenSideCastleAvailable(chessBoardState)) {
             return false;
         }
         // 3. There are no pieces between the king and the chosen rook
         if (
-            chessBoardState.get(row, 1) !== null
-            || chessBoardState.get(row, 2) !== null
-            || chessBoardState.get(row, 3) !== null
+            chessBoardState.fileRankOccupied(`b${rank}`)
+            || chessBoardState.fileRankOccupied(`c${rank}`)
+            || chessBoardState.fileRankOccupied(`d${rank}`)
         ) {
             return false;
         }
@@ -54,9 +54,9 @@ class King extends ChessPiece {
             return false;
         }
         // 5/6. The king would not pass through check or end up in check
-        if (chessBoardState.kingWouldBeInCheck(this.color, new Move([row, 4], [row, 3]))
-            || chessBoardState.kingWouldBeInCheck(this.color, new Move([row, 4], [row, 2]))) {
-            return false;
+        if (chessBoardState.kingWouldBeInCheck(this.color, this.getMoveFileRank(`d${rank}`))
+            || chessBoardState.kingWouldBeInCheck(this.color, this.getMoveFileRank(`c${rank}`))) {
+            return false
         }
 
         return true;
@@ -77,16 +77,15 @@ class King extends ChessPiece {
      */
     canKingSideCastle(chessBoardState) {
         // 1. The castling must be queenside
-        let row = this.color === Color.WHITE ? 7 : 0;
-        const rightMostPiece = chessBoardState.get(row, 7);
+        let rank = this.color === Color.WHITE ? 1 : 8;
         // 2. Neither the king nor the chosen rook has previously moved
         if (!this.kingSideCastleAvailable(chessBoardState)) {
             return false;
         }
         // 3. There are no pieces between the king and the chosen rook
         if (
-            chessBoardState.get(row, 5) !== null
-            || chessBoardState.get(row, 6) !== null
+            chessBoardState.fileRankOccupied(`f${rank}`)
+            || chessBoardState.fileRankOccupied(`g${rank}`)
         ) {
             return false;
         }
@@ -95,8 +94,8 @@ class King extends ChessPiece {
             return false;
         }
         // 5/6. The king would not pass through check or end up in check
-        if (chessBoardState.kingWouldBeInCheck(this.color, new Move([row, 4], [row, 5]))
-            || chessBoardState.kingWouldBeInCheck(this.color, new Move([row, 4], [row, 6]))) {
+        if (chessBoardState.kingWouldBeInCheck(this.color, this.getMoveFileRank(`f${rank}`))
+            || chessBoardState.kingWouldBeInCheck(this.color, this.getMoveFileRank(`g${rank}`))) {
             return false;
         }
 
@@ -111,24 +110,23 @@ class King extends ChessPiece {
      */
     validMoves(chessBoardState, checkIfKingInCheck = true) {
         const possibleMoves = [
-            new Move([this.row, this.col], [this.row - 1, this.col]),
-            new Move([this.row, this.col], [this.row - 1, this.col + 1]),
-            new Move([this.row, this.col], [this.row, this.col + 1]),
-            new Move([this.row, this.col], [this.row + 1, this.col + 1]),
-            new Move([this.row, this.col], [this.row + 1, this.col]),
-            new Move([this.row, this.col], [this.row + 1, this.col - 1]),
-            new Move([this.row, this.col], [this.row, this.col - 1]),
-            new Move([this.row, this.col], [this.row - 1, this.col - 1]),
+            this.getMoveRowCol([this.row - 1, this.col]),
+            this.getMoveRowCol([this.row - 1, this.col + 1]),
+            this.getMoveRowCol([this.row, this.col + 1]),
+            this.getMoveRowCol([this.row + 1, this.col + 1]),
+            this.getMoveRowCol([this.row + 1, this.col]),
+            this.getMoveRowCol([this.row + 1, this.col - 1]),
+            this.getMoveRowCol([this.row, this.col - 1]),
+            this.getMoveRowCol([this.row - 1, this.col - 1]),
         ];
 
         let pieceAtTarget = null;
         const validMoves = possibleMoves.filter(move => {
-            const [row, col] = move.coordsAEnd;
-            if (row < 0 || row > 7 || col < 0 || col > 7) {
+            if (move.to === null) {
                 return false;
             }
 
-            pieceAtTarget = chessBoardState.get(row, col)
+            pieceAtTarget = chessBoardState.getFileRank(move.to);
             if (!pieceAtTarget) {
                 return true;
             }
@@ -139,35 +137,14 @@ class King extends ChessPiece {
         });
 
         if (checkIfKingInCheck) {
+            const rank = this.color === Color.WHITE ? 1 : 8;
             if (this.canQueenSideCastle(chessBoardState)) {
-                let row = this.color === Color.WHITE ? 7 : 0;
-                validMoves.push(new Move(
-                    [row, 4], [row, 2], // king
-                    [row, 0], [row, 3], // left rook
-                ));
+                validMoves.push(this.getMoveFileRank(`c${rank}`));
             }
-
             if (this.canKingSideCastle(chessBoardState)) {
-                let row = this.color === Color.WHITE ? 7 : 0;
-                validMoves.push(new Move(
-                    [row, 4], [row, 6], // king
-                    [row, 7], [row, 5], // right rook
-                ));
+                validMoves.push(this.getMoveFileRank(`g${rank}`));
             }
         }
-
-        validMoves.forEach(move => {
-            move.execute = (chessBoardState) => {
-                if (this.color === Color.WHITE) {
-                    chessBoardState.invalidateCastle('KQ');
-                } else if (this.color === Color.BLACK) {
-                    chessBoardState.invalidateCastle('kq');
-                }
-
-                chessBoardState.move(move);
-                chessBoardState.enPassantTarget = '-';
-            }
-        });
 
         if (checkIfKingInCheck) {
             return validMoves.filter(move =>

@@ -1,4 +1,5 @@
 import ChessBoardState from './ChessBoardState';
+import Move from './Move';
 
 class Stockfish {
     constructor() {
@@ -19,7 +20,7 @@ class Stockfish {
                 const match = line.match('^bestmove ([a-h][1-8])([a-h][1-8])([qrbn])?');
                 if (match) {
                     this.isThinking = false;
-                    this.bestMove = { from: match[1], to: match[2], promotion: match[3] };
+                    this.bestMove = new Move(match[1], match[2], match[3]);
                 }
             }
         }
