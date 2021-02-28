@@ -11,10 +11,10 @@ export function rowCol2FileRank(rowCol) {
         throw TypeError('Column must be a number');
     }
     if (row < 0 || row > 7) {
-        throw RangeError('Row out of bounds');
+        return null;
     }
     if (col < 0 || col > 7) {
-        throw RangeError('Column out of bounds');
+        return null;
     }
 
     const file = String.fromCharCode(col + 97);

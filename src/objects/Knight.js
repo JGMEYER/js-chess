@@ -18,24 +18,23 @@ class Knight extends ChessPiece {
      */
     validMoves(chessBoardState, checkIfKingInCheck = true) {
         const possibleMoves = [
-            new Move([this.row, this.col], [this.row - 2, this.col - 1]),
-            new Move([this.row, this.col], [this.row - 2, this.col + 1]),
-            new Move([this.row, this.col], [this.row - 1, this.col + 2]),
-            new Move([this.row, this.col], [this.row + 1, this.col + 2]),
-            new Move([this.row, this.col], [this.row + 2, this.col + 1]),
-            new Move([this.row, this.col], [this.row + 2, this.col - 1]),
-            new Move([this.row, this.col], [this.row + 1, this.col - 2]),
-            new Move([this.row, this.col], [this.row - 1, this.col - 2]),
+            this.getMoveRowCol([this.row - 2, this.col - 1]),
+            this.getMoveRowCol([this.row - 2, this.col + 1]),
+            this.getMoveRowCol([this.row - 1, this.col + 2]),
+            this.getMoveRowCol([this.row + 1, this.col + 2]),
+            this.getMoveRowCol([this.row + 2, this.col + 1]),
+            this.getMoveRowCol([this.row + 2, this.col - 1]),
+            this.getMoveRowCol([this.row + 1, this.col - 2]),
+            this.getMoveRowCol([this.row - 1, this.col - 2]),
         ];
 
         let pieceAtTarget = null;
         const validMoves = possibleMoves.filter(move => {
-            const [row, col] = move.coordsAEnd;
-            if (row < 0 || row > 7 || col < 0 || col > 7) {
+            if (move.to === null) {
                 return false;
             }
 
-            pieceAtTarget = chessBoardState.get(row, col)
+            pieceAtTarget = chessBoardState.getFileRank(move.to)
             if (!pieceAtTarget) {
                 return true;
             }
