@@ -23,7 +23,7 @@ class ValidMovesUI extends React.Component {
             <div>
                 {
                     this.props.validMoves.map((move, idx) => {
-                        const [row, col] = move.coordsAEnd;
+                        const [row, col] = move.toToRowCol();
                         return (
                             <div
                                 key={`valid-move${idx}`}
@@ -46,10 +46,9 @@ class ValidMovesUI extends React.Component {
 ValidMovesUI.propTypes = {
     validMoves: PropTypes.arrayOf(
         PropTypes.shape({
-            coordsAStart: PropTypes.arrayOf(PropTypes.number),
-            coordsAEnd: PropTypes.arrayOf(PropTypes.number),
-            coordsBStart: PropTypes.arrayOf(PropTypes.number),
-            coordsBEnd: PropTypes.arrayOf(PropTypes.number),
+            from: PropTypes.string,
+            to: PropTypes.string,
+            promotion: PropTypes.string,
         })
     ).isRequired,
     movePiece: PropTypes.func.isRequired,

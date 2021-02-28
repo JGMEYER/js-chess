@@ -20,7 +20,7 @@ class Stockfish {
                 const match = line.match('^bestmove ([a-h][1-8])([a-h][1-8])([qrbn])?');
                 if (match) {
                     this.isThinking = false;
-                    this.bestMove = new Move(match[1], match[2], match[3]);
+                    this.bestMove = new Move(match[1], match[2], match[3] ? match[3] : null);
                 }
             }
         }
