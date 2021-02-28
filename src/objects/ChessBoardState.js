@@ -260,9 +260,7 @@ class ChessBoardState {
      * @returns {boolean} King currently in check
      */
     kingInCheck(color) {
-        const king = this.getPiecesFor(color).filter(
-            piece => piece instanceof King
-        )[0];
+        const king = this.getPiecesFor(color, King)[0];
         const enemyPieces = this.getPiecesFor(
             color === Color.WHITE ? Color.BLACK : Color.WHITE
         );
