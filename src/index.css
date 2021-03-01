@@ -1,6 +1,10 @@
+@font-face {
+  font-family: FreeSerif;
+  src: url("fonts/FreeSerif-YO4a.otf") format("opentype");
+}
+
 body {
   margin: 0;
-  font-family: serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
