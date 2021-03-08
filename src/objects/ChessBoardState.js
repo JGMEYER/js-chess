@@ -102,7 +102,7 @@ class ChessBoardState {
 
         // Move piece
         const piece = this.board[fromR][fromC];
-        const pieceCaptured = this.board[toR][toC];
+        let pieceCaptured = this.board[toR][toC];
         this.board[fromR][fromC] = null;
         this.board[toR][toC] = piece;
         piece.move(toR, toC);
@@ -131,8 +131,10 @@ class ChessBoardState {
         // En passant (capture)
         if (piece instanceof Pawn && move.to === this.enPassantTarget) {
             if (piece.color === Color.WHITE) {
+                pieceCaptured = this.board[toR + 1][toC];
                 this.board[toR + 1][toC] = null;
             } else if (piece.color === Color.BLACK) {
+                pieceCaptured = this.board[toR - 1][toC];
                 this.board[toR - 1][toC] = null;
             }
         }

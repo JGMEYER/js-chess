@@ -108,19 +108,21 @@ describe('ChessBoardState.js', () => {
             const chessBoardState = ChessBoardState.fromFEN('rnbqkbnr/ppppp2p/8/5Pp1/8/8/PPPPPP1P/RNBQKBNR w KQkq g6 0 3');
             const whitePawn = chessBoardState.getFileRank('f5');
             const whiteEnPassant = whitePawn.validMoves(chessBoardState)[1];
-            chessBoardState.move(whiteEnPassant);
+            const pieceCaptured = chessBoardState.move(whiteEnPassant);
             const expected = 'rnbqkbnr/ppppp2p/6P1/8/8/8/PPPPPP1P/RNBQKBNR b KQkq - 0 3';
             const actual = chessBoardState.toFEN();
             expect(actual).toEqual(expected);
+            expect(pieceCaptured instanceof Pawn).toBe(true);
         });
         test('black en passant white', () => {
             const chessBoardState = ChessBoardState.fromFEN('rnbqkbnr/pppp1ppp/8/8/5pP1/7P/PPPPP3/RNBQKBNR b KQkq g3 0 3');
             const blackPawn = chessBoardState.getFileRank('f4');
             const blackEnPassant = blackPawn.validMoves(chessBoardState)[1];
-            chessBoardState.move(blackEnPassant);
+            const pieceCaptured = chessBoardState.move(blackEnPassant);
             const expected = 'rnbqkbnr/pppp1ppp/8/8/8/6pP/PPPPP3/RNBQKBNR w KQkq - 0 4';
             const actual = chessBoardState.toFEN();
             expect(actual).toEqual(expected);
+            expect(pieceCaptured instanceof Pawn).toBe(true);
         });
     });
 
