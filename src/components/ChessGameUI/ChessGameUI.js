@@ -24,7 +24,10 @@ class ChessGameUI extends React.Component {
             chessBoardState: chessBoardState,
             selectedPiece: null,
             stockfish: stockfish,
+<<<<<<< HEAD
             stockfishSkillLevel: 0,
+=======
+>>>>>>> 0a39787fe86106473d724962beaa65c19b3d9c37
             stockfishDepth: 1,
         }
 
@@ -37,6 +40,7 @@ class ChessGameUI extends React.Component {
      * ComponentDidMount
      */
     componentDidMount() {
+<<<<<<< HEAD
         // NOTE: Uncomment to enable Stockfish computer for black
         // // Set interval to check for engine best move results
         // this.intID = setInterval(() => {
@@ -65,6 +69,28 @@ class ChessGameUI extends React.Component {
         //         }));
         //     }
         // }, 500);
+=======
+        // Set interval to check for engine best move results
+        this.intID = setInterval(() => {
+            if (this.state.chessBoardState.currentPlayer === Color.WHITE) {
+                // Computer only moves for black
+                return;
+            }
+
+            const bestMove = this.state.stockfish.getBestMove();
+            if (!bestMove && !this.state.stockfish.isThinking) {
+                this.state.stockfish.searchBestMove(this.state.chessBoardState, this.state.stockfishDepth);
+            } else if (bestMove) {
+                this.state.chessBoardState.move(bestMove)
+                this.state.stockfish.bestMove = null;
+
+                this.setState(prev => ({
+                    ...prev,
+                    chessBoardState: ChessBoardState.fromFEN(this.state.chessBoardState.toFEN()),
+                }));
+            }
+        }, 500);
+>>>>>>> 0a39787fe86106473d724962beaa65c19b3d9c37
     }
 
     /**
@@ -79,6 +105,7 @@ class ChessGameUI extends React.Component {
                 selectedPiece: null,
             }));
         } else {
+<<<<<<< HEAD
             // NOTE: Uncomment check to enable Stockfish computer for black
             // if (this.state.chessBoardState.currentPlayer === Color.WHITE && piece.color === Color.WHITE) {
             // Select piece if white (player) is moving
@@ -86,6 +113,15 @@ class ChessGameUI extends React.Component {
                 ...prev,
                 selectedPiece: piece,
             }));
+=======
+            if (this.state.chessBoardState.currentPlayer === Color.WHITE && piece.color === Color.WHITE) {
+                // Select piece if white (player) is moving
+                this.setState(prev => ({
+                    ...prev,
+                    selectedPiece: piece,
+                }));
+            }
+>>>>>>> 0a39787fe86106473d724962beaa65c19b3d9c37
         }
     }
 
