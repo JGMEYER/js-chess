@@ -48,7 +48,7 @@ class CapturedPiecesUI extends React.Component {
 }
 
 CapturedPiecesUI.propTypes = {
-    piecesCaptured: PropTypes.arrayOf(ChessPiece).isRequired,
+    piecesCaptured: PropTypes.arrayOf(PropTypes.instanceOf(ChessPiece)).isRequired,
 }
 
 export default CapturedPiecesUI;
