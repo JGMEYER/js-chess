@@ -1,0 +1,25 @@
+.captured-pieces-ui {
+    display: flex;
+    align-items: center;
+}
+
+.captured-pieces-points {
+    margin-right: 15px;
+}
+
+.captured-piece {
+    font-family: "FreeSerif";
+    font-size: 24px;
+    width: 1em;
+    margin-left: -0.4em;
+}
+
+.captured-piece.white {
+    color: white;
+    -webkit-text-stroke: 0.5px black;
+}
+
+.captured-piece.black {
+    color: black;
+    -webkit-text-stroke: 0.1px white;
+}

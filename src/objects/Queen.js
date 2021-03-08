@@ -7,7 +7,8 @@ class Queen extends ChessPiece {
         const icon = '♛';
         const printIcon = color === Color.WHITE ? '♕' : '♛';
         const notation = color === Color.WHITE ? 'Q' : 'q';
-        super(icon, printIcon, notation, color, row, col);
+        const points = 9;
+        super(icon, printIcon, notation, points, color, row, col);
     }
 
     /**

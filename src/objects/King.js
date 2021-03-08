@@ -9,7 +9,8 @@ class King extends ChessPiece {
         const icon = '♚';
         const printIcon = color === Color.WHITE ? '♔' : '♚';
         const notation = color === Color.WHITE ? 'K' : 'k';
-        super(icon, printIcon, notation, color, row, col);
+        const points = Infinity;
+        super(icon, printIcon, notation, points, color, row, col);
     }
 
     /**
