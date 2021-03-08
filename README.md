@@ -1,6 +1,6 @@
-# Getting Started with Create React App
+# JS Chess
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+The classic game of chess programmed in Javascript. Originally created as a training exercise for practicing React development.
 
 ## Available Scripts
 
@@ -30,6 +30,10 @@ Your app is ready to be deployed!
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
 ### `npm run eject`
+
+### `npm run deploy`
+
+Deploy changes to github pages.
 
 **Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
