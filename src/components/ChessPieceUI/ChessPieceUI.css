@@ -3,12 +3,8 @@
     display: flex;
     width: 50px;
     height: 50px;
-<<<<<<< HEAD
     font-family: FreeSerif, serif;
     font-size: 50px;
-=======
-    font-size: 46px;
->>>>>>> 0a39787fe86106473d724962beaa65c19b3d9c37
     justify-content: center;
     align-items: center;
     /* Disable highlighting */
