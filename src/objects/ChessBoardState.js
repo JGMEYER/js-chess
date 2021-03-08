@@ -129,9 +129,9 @@ class ChessBoardState {
         // En passant (capture)
         if (piece instanceof Pawn && move.to === this.enPassantTarget) {
             if (piece.color === Color.WHITE) {
-                this.board[toR - 1][toC] = null;
-            } else if (piece.color === Color.BLACK) {
                 this.board[toR + 1][toC] = null;
+            } else if (piece.color === Color.BLACK) {
+                this.board[toR - 1][toC] = null;
             }
         }
 
