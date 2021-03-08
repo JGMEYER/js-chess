@@ -94,6 +94,7 @@ class ChessBoardState {
     /**
      * Execute move.
      * @param {Move} move
+     * @returns {ChessPiece} piece captured
      */
     move(move) {
         const [fromR, fromC] = fileRank2RowCol(move.from);
@@ -101,6 +102,7 @@ class ChessBoardState {
 
         // Move piece
         const piece = this.board[fromR][fromC];
+        const pieceCaptured = this.board[toR][toC];
         this.board[fromR][fromC] = null;
         this.board[toR][toC] = piece;
         piece.move(toR, toC);
@@ -219,6 +221,8 @@ class ChessBoardState {
         if (this.currentPlayer === Color.WHITE) {
             this.fullMoveNumber++;
         }
+
+        return pieceCaptured;
     }
 
     /**

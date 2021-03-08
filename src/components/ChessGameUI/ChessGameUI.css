@@ -1,0 +1,10 @@
+.chess-board-game-ui-container {
+    display: flex;
+}
+
+.chess-board-ui-sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-left: 20px;
+}

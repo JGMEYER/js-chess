@@ -1,5 +1,7 @@
 import React from 'react';
 
+import './ChessGameUI.css';
+import CapturedPiecesUI from '../CapturedPiecesUI/CapturedPiecesUI';
 import ChessBoardUI from '../ChessBoardUI/ChessBoardUI';
 import ChessPieceUI from '../ChessPieceUI/ChessPieceUI';
 import FENFormUI from '../FENFormUI/FENFormUI';
@@ -23,6 +25,8 @@ class ChessGameUI extends React.Component {
         this.state = {
             chessBoardState: chessBoardState,
             selectedPiece: null,
+            whitePiecesCaptured: [],
+            blackPiecesCaptured: [],
             stockfish: stockfish,
             stockfishSkillLevel: 0,
             stockfishDepth: 1,
@@ -108,7 +112,14 @@ class ChessGameUI extends React.Component {
             return toR === row && toC === col
         })[0];
         if (move) {
-            this.state.chessBoardState.move(move);
+            const pieceCaptured = this.state.chessBoardState.move(move);
+            if (pieceCaptured) {
+                if (pieceCaptured.color === Color.WHITE) {
+                    this.state.whitePiecesCaptured.push(pieceCaptured);
+                } else if (pieceCaptured.color === Color.BLACK) {
+                    this.state.blackPiecesCaptured.push(pieceCaptured);
+                }
+            }
         } else {
             console.log('Invalid move');
         }
@@ -141,30 +152,34 @@ class ChessGameUI extends React.Component {
         const chessPieces = this.state.chessBoardState.getPieces();
         return (
             <div>
-                <ChessBoardUI movePiece={this.movePiece} />
-                {
-                    chessPieces.map(piece =>
-                        <ChessPieceUI
-                            key={`chess-piece${piece.id}`}
-                            piece={piece}
-                            isInCheck={
-                                piece instanceof King
-                                && this.state.chessBoardState.kingInCheck(piece.color)
-                            }
-                            selectPiece={() => this.selectPiece(piece)} />
-                    )
-                }
-                {
-                    this.state.selectedPiece
-                        ? <ValidMovesUI
-                            validMoves={
-                                this.state.selectedPiece.validMoves(
-                                    this.state.chessBoardState
-                                )
-                            }
-                            movePiece={this.movePiece} />
-                        : <div></div>
-                }
+                <div className="chess-board-game-ui-container">
+                    <div className="chess-board-ui-container">
+                        <ChessBoardUI movePiece={this.movePiece} />
+                        {chessPieces.map(piece =>
+                            <ChessPieceUI
+                                key={`chess-piece${piece.id}`}
+                                piece={piece}
+                                isInCheck={
+                                    piece instanceof King
+                                    && this.state.chessBoardState.kingInCheck(piece.color)
+                                }
+                                selectPiece={() => this.selectPiece(piece)} />
+                        )}
+                        {this.state.selectedPiece
+                            ? <ValidMovesUI
+                                validMoves={
+                                    this.state.selectedPiece.validMoves(
+                                        this.state.chessBoardState
+                                    )
+                                }
+                                movePiece={this.movePiece} />
+                            : <div></div>}
+                    </div>
+                    <div className="chess-board-ui-sidebar">
+                        <CapturedPiecesUI piecesCaptured={this.state.whitePiecesCaptured}></CapturedPiecesUI>
+                        <CapturedPiecesUI piecesCaptured={this.state.blackPiecesCaptured}></CapturedPiecesUI>
+                    </div>
+                </div>
                 <FENFormUI
                     fenCode={this.state.chessBoardState.toFEN()}
                     updateBoard={this.updateBoard}

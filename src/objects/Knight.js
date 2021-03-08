@@ -8,7 +8,8 @@ class Knight extends ChessPiece {
         const icon = '♞';
         const printIcon = color === Color.WHITE ? '♘' : '♞';
         const notation = color === Color.WHITE ? 'N' : 'n';
-        super(icon, printIcon, notation, color, row, col);
+        const points = 3;
+        super(icon, printIcon, notation, points, color, row, col);
     }
 
     /**
