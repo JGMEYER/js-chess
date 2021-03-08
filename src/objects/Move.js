@@ -1,26 +1,24 @@
+import { fileRank2RowCol } from "../utils/board";
 
 class Move {
     /**
      * Construct Move
-     * @param {Array<number>} coordsAStart piece A start
-     * @param {Array<number>} coordsAEnd piece A end
-     * @param {Array<number>} coordsBStart piece B start (for castling)
-     * @param {Array<number>} coordsBEnd piece B end (for castling)
+     * @param {string} to fileRank
+     * @param {string} from fileRank
+     * @param {string} promotion promotion i.e. /[qrbn]/
      */
-    constructor(coordsAStart, coordsAEnd, coordsBStart = null, coordsBEnd = null) {
-        this.coordsAStart = coordsAStart;
-        this.coordsAEnd = coordsAEnd;
-        this.coordsBStart = coordsBStart;
-        this.coordsBEnd = coordsBEnd;
+    constructor(from, to, promotion) {
+        this.from = from;
+        this.to = to;
+        this.promotion = promotion;
     }
 
-    /**
-     * Execute move on ChessBoardState. Can be overridden.
-     * @param {ChessBoardState} chessBoardState
-     */
-    execute(chessBoardState) {
-        chessBoardState.move(this);
-        chessBoardState.enPassantTarget = '-';
+    fromToRowCol() {
+        return fileRank2RowCol(this.from);
+    }
+
+    toToRowCol() {
+        return fileRank2RowCol(this.to);
     }
 }
 

@@ -8,7 +8,7 @@ import Queen from './Queen';
 import King from './King';
 import ChessPiece from './ChessPiece';
 import Move from './Move';
-import { fileRank2RowCol } from '../utils/board';
+import { fileRank2RowCol, rowCol2FileRank } from '../utils/board';
 import Color from '../utils/color';
 
 /**
@@ -52,6 +52,25 @@ class ChessBoardState {
     }
 
     /**
+     * Returns whether (file, rank) occupied by piece
+     * @param {string} fileRank
+     */
+    fileRankOccupied(fileRank) {
+        const [row, col] = fileRank2RowCol(fileRank);
+        return this.board[row][col] !== null;
+    }
+
+    /**
+     * Sets the piece at (file, rank).
+     * @param {string} fileRank
+     * @param {ChessPiece} piece
+     */
+    setFileRank(fileRank, piece) {
+        const [row, col] = fileRank2RowCol(fileRank);
+        this.board[row][col] = piece;
+    }
+
+    /**
      * Reset the game board.
      */
     reset() {
@@ -73,35 +92,130 @@ class ChessBoardState {
     }
 
     /**
-     * Executes move
+     * Execute move.
      * @param {Move} move
      */
     move(move) {
-        const [aR1, aC1] = move.coordsAStart;
-        const [aR2, aC2] = move.coordsAEnd;
-        const pieceA = this.board[aR1][aC1];
-        this.board[aR2][aC2] = pieceA;
-        this.board[aR1][aC1] = null;
-        pieceA.move(aR2, aC2);
+        const [fromR, fromC] = fileRank2RowCol(move.from);
+        const [toR, toC] = fileRank2RowCol(move.to);
 
-        if (pieceA instanceof Pawn || pieceA instanceof King) {
+        // Move piece
+        const piece = this.board[fromR][fromC];
+        this.board[fromR][fromC] = null;
+        this.board[toR][toC] = piece;
+        piece.move(toR, toC);
+
+        // Promotion
+        switch (move.promotion) {
+            case 'q':
+                this.board[toR][toC] = new Queen(this.currentPlayer, toR, toC);
+                break;
+            case 'r':
+                this.board[toR][toC] = new Rook(this.currentPlayer, toR, toC);
+                break;
+            case 'b':
+                this.board[toR][toC] = new Bishop(this.currentPlayer, toR, toC);
+                break;
+            case 'n':
+                this.board[toR][toC] = new Knight(this.currentPlayer, toR, toC);
+                break;
+            case null:
+                // no promotion
+                break;
+            default:
+                throw new Error('Invalid promotion value, should be /[qrbn]/');
+        }
+
+        // En passant (capture)
+        if (piece instanceof Pawn && move.to === this.enPassantTarget) {
+            if (piece.color === Color.WHITE) {
+                this.board[toR - 1][toC] = null;
+            } else if (piece.color === Color.BLACK) {
+                this.board[toR + 1][toC] = null;
+            }
+        }
+
+        // En passant (set)
+        if (piece instanceof Pawn && Math.abs(fromR - toR) === 2) {
+            if (piece.color === Color.WHITE) {
+                this.enPassantTarget = rowCol2FileRank([toR + 1, toC]);
+            } else if (piece.color === Color.BLACK) {
+                this.enPassantTarget = rowCol2FileRank([toR - 1, toC]);
+            }
+        } else {
+            this.enPassantTarget = '-';
+        }
+
+        // Castling (move)
+        if (piece instanceof King && Math.abs(fromC - toC) === 2) {
+            if (piece.color === Color.WHITE) {
+                if (move.to === 'g1') {
+                    // Kingside
+                    const rook = this.getFileRank('h1');
+                    this.setFileRank('f1', rook);
+                    this.setFileRank('h1', null);
+                } else if (move.to === 'c1') {
+                    // Queenside
+                    const rook = this.getFileRank('a1');
+                    this.setFileRank('d1', rook)
+                    this.setFileRank('a1', null);
+                } else {
+                    throw new Error('Invalid white king move');
+                }
+            } else if (piece.color === Color.BLACK) {
+                if (move.to === 'g8') {
+                    // Kingside
+                    const rook = this.getFileRank('h8');
+                    this.setFileRank('f8', rook);
+                    this.setFileRank('h8', null);
+                } else if (move.to === 'c8') {
+                    // Queenside
+                    const rook = this.getFileRank('a8');
+                    this.setFileRank('d8', rook)
+                    this.setFileRank('a8', null);
+                } else {
+                    throw new Error('Invalid white king move');
+                }
+            }
+        }
+
+        // Castling (invalidate)
+        if (piece instanceof King) {
+            if (piece.color === Color.WHITE) {
+                this.invalidateCastle('KQ');
+            } else if (piece.color === Color.BLACK) {
+                this.invalidateCastle('kq');
+            }
+        }
+        if (piece instanceof Rook) {
+            if (piece.color === Color.WHITE) {
+                if (move.from === 'a1') {
+                    this.invalidateCastle('Q');
+                } else if (move.from === 'h1') {
+                    this.invalidateCastle('K');
+                }
+            } else if (piece.color === Color.BLACK) {
+                if (move.from === 'a8') {
+                    this.invalidateCastle('q');
+                } else if (move.from === 'h8') {
+                    this.invalidateCastle('k');
+                }
+            }
+        }
+
+        // Update halfMoveClock
+        if (piece instanceof Pawn || piece instanceof King) {
             this.halfMoveClock = 0;
         } else {
             this.halfMoveClock++;
         }
 
-        if (move.coordsBStart !== null && move.coordsBEnd !== null) {
-            const [bR1, bC1] = move.coordsBStart;
-            const [bR2, bC2] = move.coordsBEnd;
-            const pieceB = this.board[bR1][bC1];
-            this.board[bR2][bC2] = pieceB;
-            this.board[bR1][bC1] = null;
-            pieceB.move(bR2, bC2);
-        }
-
+        // Toggle currentPlayer
         this.currentPlayer = this.currentPlayer === Color.WHITE
             ? Color.BLACK
             : Color.WHITE;
+
+        // Update fullMoveNumber
         if (this.currentPlayer === Color.WHITE) {
             this.fullMoveNumber++;
         }
@@ -146,9 +260,7 @@ class ChessBoardState {
      * @returns {boolean} King currently in check
      */
     kingInCheck(color) {
-        const king = this.getPiecesFor(color).filter(
-            piece => piece instanceof King
-        )[0];
+        const king = this.getPiecesFor(color, King)[0];
         const enemyPieces = this.getPiecesFor(
             color === Color.WHITE ? Color.BLACK : Color.WHITE
         );
@@ -157,7 +269,7 @@ class ChessBoardState {
             const enemyPiece = enemyPieces[i];
             const validMoves = enemyPiece.validMoves(this, false);
             const validMovesOnKing = validMoves.filter(
-                move => move.coordsAEnd[0] === king.row && move.coordsAEnd[1] === king.col
+                move => move.to === king.getFileRank()
             )
             if (validMovesOnKing.length > 0) {
                 return true;
@@ -198,7 +310,7 @@ class ChessBoardState {
      */
     kingWouldBeInCheck(color, move) {
         const cloneState = cloneDeep(this);
-        move.execute(cloneState);
+        cloneState.move(move);
         return cloneState.kingInCheck(color);
     }
 

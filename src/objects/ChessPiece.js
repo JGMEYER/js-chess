@@ -1,6 +1,7 @@
 import ChessBoardState from './ChessBoardState';
 import Color from '../utils/color';
 import Move from './Move';
+import { rowCol2FileRank } from '../utils/board';
 
 /**
  * A chess piece on the game board.
@@ -44,6 +45,35 @@ class ChessPiece {
     }
 
     /**
+     * Get fileRank of piece.
+     */
+    getFileRank() {
+        return rowCol2FileRank([this.row, this.col]);
+    }
+
+    /**
+     * Get a move from this piece's location to the specified location.
+     * @param {Array<number>} to [row, col]
+     * @param {string} promotion promotion i.e. /[qrbn]/
+     */
+    getMoveRowCol(toRowCol, promotion = null) {
+        const from = rowCol2FileRank([this.row, this.col]);
+        const to = rowCol2FileRank(toRowCol);
+        return new Move(from, to, promotion);
+    }
+
+    /**
+     * Get a move from this piece's location to the specified location.
+     * @param {string} to fileRank
+     * @param {string} promotion promotion i.e. /[qrbn]/
+     */
+    getMoveFileRank(toFileRank, promotion = null) {
+        const from = rowCol2FileRank([this.row, this.col]);
+        const to = toFileRank;
+        return new Move(from, to, promotion);
+    }
+
+    /**
      * Helper function for finding valid moves along a line, i.e orthogonally
      * or on a diagonal.
      * @param {ChessBoardState} chessBoardState
@@ -61,17 +91,27 @@ class ChessPiece {
 
         while (row >= 0 && row <= 7 && col >= 0 && col <= 7) {
             pieceAtTarget = chessBoardState.get(row, col);
-            move = new Move([this.row, this.col], [row, col])
+            move = this.getMoveRowCol([row, col]);
+
             if (pieceAtTarget) {
                 if (pieceAtTarget.isEnemyOf(this.color)) {
-                    validMoves.push(move);
+                    if (checkIfKingInCheck) {
+                        if (!chessBoardState.kingWouldBeInCheck(this.color, move)) {
+                            validMoves.push(move);
+                        }
+                    } else {
+                        validMoves.push(move);
+                    }
                 }
                 break;
-            } else if (checkIfKingInCheck
-                && chessBoardState.kingWouldBeInCheck(this.color, move)) {
-                // do nothing
             } else {
-                validMoves.push(move);
+                if (checkIfKingInCheck) {
+                    if (!chessBoardState.kingWouldBeInCheck(this.color, move)) {
+                        validMoves.push(move);
+                    }
+                } else {
+                    validMoves.push(move);
+                }
             }
             row += rowInc;
             col += colInc;

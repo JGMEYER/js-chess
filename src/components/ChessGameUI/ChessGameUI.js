@@ -7,6 +7,8 @@ import ValidMovesUI from '../ValidMovesUI/ValidMovesUI';
 import ChessBoardState from '../../objects/ChessBoardState';
 import ChessPiece from '../../objects/ChessPiece';
 import King from '../../objects/King';
+import Stockfish from '../../objects/Stockfish';
+import Color from '../../utils/color';
 
 class ChessGameUI extends React.Component {
 
@@ -16,14 +18,79 @@ class ChessGameUI extends React.Component {
         const chessBoardState = new ChessBoardState();
         chessBoardState.reset();
 
+        const stockfish = new Stockfish();
+
         this.state = {
             chessBoardState: chessBoardState,
             selectedPiece: null,
+            stockfish: stockfish,
+<<<<<<< HEAD
+            stockfishSkillLevel: 0,
+=======
+>>>>>>> 0a39787fe86106473d724962beaa65c19b3d9c37
+            stockfishDepth: 1,
         }
 
         this.selectPiece = this.selectPiece.bind(this);
         this.movePiece = this.movePiece.bind(this);
         this.updateBoard = this.updateBoard.bind(this);
+    }
+
+    /**
+     * ComponentDidMount
+     */
+    componentDidMount() {
+<<<<<<< HEAD
+        // NOTE: Uncomment to enable Stockfish computer for black
+        // // Set interval to check for engine best move results
+        // this.intID = setInterval(() => {
+        //     if (this.state.chessBoardState.currentPlayer === Color.WHITE) {
+        //         // Computer only moves for black
+        //         return;
+        //     }
+
+        //     if (this.state.stockfish.skillLevel !== this.state.stockfishSkillLevel) {
+        //         this.state.stockfish.setSkillLevel(this.state.stockfishSkillLevel)
+        //     }
+        //     if (this.state.stockfish.depth !== this.state.stockfishDepth) {
+        //         this.state.stockfish.setDepth(this.state.stockfishDepth);
+        //     }
+
+        //     const bestMove = this.state.stockfish.getBestMove();
+        //     if (!bestMove && !this.state.stockfish.isThinking) {
+        //         this.state.stockfish.searchBestMove(this.state.chessBoardState, this.state.stockfishDepth);
+        //     } else if (bestMove) {
+        //         this.state.chessBoardState.move(bestMove)
+        //         this.state.stockfish.bestMove = null;
+
+        //         this.setState(prev => ({
+        //             ...prev,
+        //             chessBoardState: ChessBoardState.fromFEN(this.state.chessBoardState.toFEN()),
+        //         }));
+        //     }
+        // }, 500);
+=======
+        // Set interval to check for engine best move results
+        this.intID = setInterval(() => {
+            if (this.state.chessBoardState.currentPlayer === Color.WHITE) {
+                // Computer only moves for black
+                return;
+            }
+
+            const bestMove = this.state.stockfish.getBestMove();
+            if (!bestMove && !this.state.stockfish.isThinking) {
+                this.state.stockfish.searchBestMove(this.state.chessBoardState, this.state.stockfishDepth);
+            } else if (bestMove) {
+                this.state.chessBoardState.move(bestMove)
+                this.state.stockfish.bestMove = null;
+
+                this.setState(prev => ({
+                    ...prev,
+                    chessBoardState: ChessBoardState.fromFEN(this.state.chessBoardState.toFEN()),
+                }));
+            }
+        }, 500);
+>>>>>>> 0a39787fe86106473d724962beaa65c19b3d9c37
     }
 
     /**
@@ -38,13 +105,23 @@ class ChessGameUI extends React.Component {
                 selectedPiece: null,
             }));
         } else {
-            if (piece.color === this.state.chessBoardState.currentPlayer) {
-                // Select piece
+<<<<<<< HEAD
+            // NOTE: Uncomment check to enable Stockfish computer for black
+            // if (this.state.chessBoardState.currentPlayer === Color.WHITE && piece.color === Color.WHITE) {
+            // Select piece if white (player) is moving
+            this.setState(prev => ({
+                ...prev,
+                selectedPiece: piece,
+            }));
+=======
+            if (this.state.chessBoardState.currentPlayer === Color.WHITE && piece.color === Color.WHITE) {
+                // Select piece if white (player) is moving
                 this.setState(prev => ({
                     ...prev,
                     selectedPiece: piece,
                 }));
             }
+>>>>>>> 0a39787fe86106473d724962beaa65c19b3d9c37
         }
     }
 
@@ -62,19 +139,21 @@ class ChessGameUI extends React.Component {
         const validMoves = this.state.selectedPiece.validMoves(
             this.state.chessBoardState
         )
-        const move = validMoves.filter(move =>
-            move.coordsAEnd[0] === row && move.coordsAEnd[1] === col)[0];
+        const move = validMoves.filter(move => {
+            const [toR, toC] = move.toToRowCol();
+            return toR === row && toC === col
+        })[0];
         if (move) {
-            move.execute(this.state.chessBoardState);
+            this.state.chessBoardState.move(move);
         } else {
             console.log('Invalid move');
         }
 
-        console.log(this.state.chessBoardState.toFEN());
+        const newChessBoardState = ChessBoardState.fromFEN(this.state.chessBoardState.toFEN());
 
         this.setState(prev => ({
             ...prev,
-            chessBoardState: ChessBoardState.fromFEN(this.state.chessBoardState.toFEN()),
+            chessBoardState: newChessBoardState,
             selectedPiece: null,
         }));
     }
@@ -84,9 +163,10 @@ class ChessGameUI extends React.Component {
      * @param {string} fenCode
      */
     updateBoard(fenCode) {
+        const newChessBoardState = ChessBoardState.fromFEN(fenCode);
         this.setState(prev => ({
             ...prev,
-            chessBoardState: ChessBoardState.fromFEN(fenCode),
+            chessBoardState: newChessBoardState,
         }));
     }
 

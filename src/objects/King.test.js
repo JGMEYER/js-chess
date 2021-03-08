@@ -1,9 +1,4 @@
 import ChessBoardState from './ChessBoardState';
-import King from './King';
-import Knight from './Knight';
-import Move from './Move';
-import Rook from './Rook';
-import Color from '../utils/color';
 
 describe('King.js', () => {
 
@@ -12,8 +7,8 @@ describe('King.js', () => {
             const chessBoardState = ChessBoardState.fromFEN('4k3/8/8/8/8/8/8/R3K2R w KQ - 0 1')
             const king = chessBoardState.getFileRank('e1');
             const leftRook = chessBoardState.getFileRank('a1');
-            const move = king.validMoves(chessBoardState)[5];
-            move.execute(chessBoardState);
+            const move = king.getMoveFileRank('c1');
+            chessBoardState.move(move);
 
             expect(chessBoardState.getFileRank('c1')).toEqual(king);
             expect(chessBoardState.getFileRank('d1')).toEqual(leftRook);
@@ -24,8 +19,8 @@ describe('King.js', () => {
             const chessBoardState = ChessBoardState.fromFEN('4k3/8/8/8/8/8/8/R3K2R w KQ - 0 1')
             const king = chessBoardState.getFileRank('e1');
             const rightRook = chessBoardState.getFileRank('h1');
-            const move = king.validMoves(chessBoardState)[6];
-            move.execute(chessBoardState);
+            const move = king.getMoveFileRank('g1');
+            chessBoardState.move(move);
 
             expect(chessBoardState.getFileRank('g1')).toEqual(king);
             expect(chessBoardState.getFileRank('f1')).toEqual(rightRook);
@@ -42,11 +37,11 @@ describe('King.js', () => {
             expect(king.canQueenSideCastle(chessBoardState)).toBe(true);
 
             // Move rook forward and back
-            const rookMoveUp = leftRook.validMoves(chessBoardState)[0];
-            const rookMoveBack = new Move([6, 0], [7, 0]);
-            rookMoveUp.execute(chessBoardState);
+            const rookMoveUp = leftRook.getMoveFileRank('a2');
+            chessBoardState.move(rookMoveUp);
             expect(king.canQueenSideCastle(chessBoardState)).toBe(false);
-            rookMoveBack.execute(chessBoardState);
+            const rookMoveBack = leftRook.getMoveFileRank('a1');
+            chessBoardState.move(rookMoveBack);
             expect(king.canQueenSideCastle(chessBoardState)).toBe(false);
         });
 
@@ -94,11 +89,11 @@ describe('King.js', () => {
             expect(king.canKingSideCastle(chessBoardState)).toBe(true);
 
             // Move rook forward and back
-            const rookMoveUp = rightRook.validMoves(chessBoardState)[0];
-            const rookMoveBack = new Move([6, 7], [7, 7]);
-            rookMoveUp.execute(chessBoardState);
+            const rookMoveUp = rightRook.getMoveFileRank('h2');
+            chessBoardState.move(rookMoveUp);
             expect(king.canKingSideCastle(chessBoardState)).toBe(false);
-            rookMoveBack.execute(chessBoardState);
+            const rookMoveBack = rightRook.getMoveFileRank('h1');
+            chessBoardState.move(rookMoveBack);
             expect(king.canKingSideCastle(chessBoardState)).toBe(false);
         });
 
