@@ -33,8 +33,9 @@ class CapturedPiecesUI extends React.Component {
                     {totalPoints}
                 </p>
                 {
-                    sortedPieces.map(piece =>
+                    sortedPieces.map((piece, idx) =>
                         <p
+                            style={{ zIndex: sortedPieces.length - idx }}
                             className={`captured-piece ${piece.color === Color.WHITE ? 'white' : 'black'}`}
                             key={`captured-piece${piece.id}`}>
                             {piece.icon}
