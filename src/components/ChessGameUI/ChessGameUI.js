@@ -86,10 +86,12 @@ class ChessGameUI extends React.Component {
             // NOTE: Uncomment check to enable Stockfish computer for black
             // if (this.state.chessBoardState.currentPlayer === Color.WHITE && piece.color === Color.WHITE) {
             // Select piece if white (player) is moving
-            this.setState(prev => ({
-                ...prev,
-                selectedPiece: piece,
-            }));
+            if (this.state.chessBoardState.currentPlayer === piece.color) {
+                this.setState(prev => ({
+                    ...prev,
+                    selectedPiece: piece,
+                }));
+            }
         }
     }
 
