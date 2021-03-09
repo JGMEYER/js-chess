@@ -3,6 +3,7 @@ import ChessBoardState from "./ChessBoardState";
 import ChessPiece from "./ChessPiece";
 import King from "./King";
 import Knight from "./Knight";
+import Move from "./Move";
 import Pawn from "./Pawn";
 import Rook from "./Rook";
 import Queen from "./Queen";
@@ -165,6 +166,34 @@ describe('ChessBoardState.js', () => {
             const kingSideCastle = blackKing.validMoves(chessBoardState)[1];
             chessBoardState.move(kingSideCastle);
             expect(chessBoardState.availableCastles).toEqual('-');
+        });
+
+        test('capturing h1 rook invalidates white king side castle', () => {
+            const chessBoardState = ChessBoardState.fromFEN('rnbqkb1r/pppppppp/8/8/8/1N4n1/PPPPPPPP/RNBQKB1R w KQkq - 6 4')
+            const blackKnightTakeH1Rook = new Move('g3', 'h1', null);
+            chessBoardState.move(blackKnightTakeH1Rook);
+            expect(chessBoardState.availableCastles).toEqual('Qkq');
+        });
+
+        test('capturing a1 rook invalidates white queen side castle', () => {
+            const chessBoardState = ChessBoardState.fromFEN('r1bqkbnr/pppppppp/8/8/8/1n3N2/PPPPPPPP/RNBQKB1R w KQkq - 6 4')
+            const blackKnightTakeA1Rook = new Move('b3', 'a1', null);
+            chessBoardState.move(blackKnightTakeA1Rook);
+            expect(chessBoardState.availableCastles).toEqual('Kkq');
+        });
+
+        test('capturing h8 rook invalidates black king side castle', () => {
+            const chessBoardState = ChessBoardState.fromFEN('rnbqkb1r/pppppppp/6N1/8/8/6n1/PPPPPPPP/RNBQKB1R w KQkq - 6 4')
+            const whiteKnightTakeH8Rook = new Move('g6', 'h8', null);
+            chessBoardState.move(whiteKnightTakeH8Rook);
+            expect(chessBoardState.availableCastles).toEqual('KQq');
+        });
+
+        test('capturing a8 rook invalidates black queen side castle', () => {
+            const chessBoardState = ChessBoardState.fromFEN('r1bqkbnr/pppppppp/1N6/8/6n1/8/PPPPPPPP/R1BQKBNR w KQkq - 6 4')
+            const whiteKnightTakeA8Rook = new Move('b6', 'a8', null);
+            chessBoardState.move(whiteKnightTakeA8Rook);
+            expect(chessBoardState.availableCastles).toEqual('KQk');
         });
     });
 });

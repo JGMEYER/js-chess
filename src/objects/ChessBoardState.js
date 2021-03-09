@@ -185,6 +185,7 @@ class ChessBoardState {
 
         // Castling (invalidate)
         if (piece instanceof King) {
+            // King moved
             if (piece.color === Color.WHITE) {
                 this.invalidateCastle('KQ');
             } else if (piece.color === Color.BLACK) {
@@ -192,6 +193,7 @@ class ChessBoardState {
             }
         }
         if (piece instanceof Rook) {
+            // Rook moved
             if (piece.color === Color.WHITE) {
                 if (move.from === 'a1') {
                     this.invalidateCastle('Q');
@@ -202,6 +204,22 @@ class ChessBoardState {
                 if (move.from === 'a8') {
                     this.invalidateCastle('q');
                 } else if (move.from === 'h8') {
+                    this.invalidateCastle('k');
+                }
+            }
+        }
+        if (pieceCaptured instanceof Rook) {
+            // Rook captured
+            if (pieceCaptured.color === Color.WHITE) {
+                if (move.to === 'a1') {
+                    this.invalidateCastle('Q');
+                } else if (move.to === 'h1') {
+                    this.invalidateCastle('K');
+                }
+            } else if (pieceCaptured.color === Color.BLACK) {
+                if (move.to === 'a8') {
+                    this.invalidateCastle('q');
+                } else if (move.to === 'h8') {
                     this.invalidateCastle('k');
                 }
             }
