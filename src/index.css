@@ -1,17 +1,25 @@
 @font-face {
-  font-family: FreeSerif;
-  src: url("fonts/FreeSerif-YO4a.otf") format("opentype");
+    font-family: FreeSerif;
+    src: url("fonts/FreeSerif-YO4a.otf") format("opentype");
 }
 
 body {
-  margin: 0;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 #app-container {
-  display: flex;
-  min-width: 600px;
-  padding: 10px;
-  justify-content: center;
+    display: flex;
+    min-width: 600px;
+    padding: 10px;
+    justify-content: center;
+}
+
+/* Reactive Design */
+
+@media only screen and (max-width: 800px) {
+    #app-container {
+        justify-content: flex-start;
+    }
 }
