@@ -53,7 +53,7 @@ class FENFormUI extends React.Component {
             }));
             return;
         }
-        this.props.updateBoard(this.state.fenCode);
+        this.props.updateBoard(this.state.fenCode, true);
     }
 
     /**

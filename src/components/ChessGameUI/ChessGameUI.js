@@ -160,9 +160,18 @@ class ChessGameUI extends React.Component {
     /**
      * Update board to match FEN code.
      * @param {string} fenCode
+     * @param {boolean} resetHistory
      */
-    updateBoard(fenCode) {
+    updateBoard(fenCode, resetHistory = false) {
         const newChessBoardState = ChessBoardState.fromFEN(fenCode);
+
+        if (resetHistory) {
+            this.state.whitePiecesCaptured = [];
+            this.state.blackPiecesCaptured = [];
+            this.state.chessBoardHistory.clear();
+            this.state.chessBoardHistory.push(fenCode);
+        }
+
         this.setState(prev => ({
             ...prev,
             chessBoardState: newChessBoardState,

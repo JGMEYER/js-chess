@@ -30,6 +30,15 @@ class ChessBoardHistory {
     }
 
     /**
+     * Clear all history.
+     */
+    clear() {
+        this.history = [];
+        this.idx = -1;
+        this.isInPast = false;
+    }
+
+    /**
      * Move history back a step.
      */
     back() {
@@ -58,7 +67,9 @@ class ChessBoardHistory {
      */
     toStart() {
         this.idx = 0;
-        this.isInPast = true;
+        if (this.history.length > 1) {
+            this.isInPast = true;
+        }
         return this.history[this.idx];
     }
 
