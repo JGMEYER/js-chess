@@ -1,10 +1,12 @@
 .chess-board-game-ui-container {
+    position:relative;
     display: flex;
+    border-radius: 3px;
 }
 
 .chess-board-ui-sidebar {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    margin-left: 20px;
+    margin-left: 30px;
 }

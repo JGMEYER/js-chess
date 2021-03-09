@@ -1,5 +1,21 @@
+.chess-board-container {
+    display: grid;
+    background-color: white;
+    grid-template-areas: "board board board board board board board board ranks"
+                         "board board board board board board board board ranks"
+                         "board board board board board board board board ranks"
+                         "board board board board board board board board ranks"
+                         "board board board board board board board board ranks"
+                         "board board board board board board board board ranks"
+                         "board board board board board board board board ranks"
+                         "board board board board board board board board ranks"
+                         "files files files files files files files files _";
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 8px;
+}
+
 .chess-board {
     display: grid;
+    grid-area: board;
     grid-template-rows: repeat(8, 50px);
     grid-template-columns: repeat(8, 50px);
 }
@@ -17,4 +33,22 @@
 .chess-board div:nth-child(48) ~ div:nth-child(-2n+56),
 .chess-board div:nth-child(56) ~ div:nth-child(-2n+63) {
     background-color: hsl(18, 28%, 49%);
+}
+
+.chess-board-ranks {
+    grid-area: ranks;
+    display: flex;
+    flex-direction: column;
+    margin: 0 6px;
+}
+
+.chess-board-files {
+    grid-area: files;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.chess-board-files p {
+    margin: 1px 0;
 }

@@ -2,11 +2,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import './index.css';
-import ChessGame from './components/ChessGameUI/ChessGameUI';
+import ChessGameUI from './components/ChessGameUI/ChessGameUI';
 
 ReactDOM.render(
   <React.StrictMode>
-    <ChessGame />
+    <div id="app-container">
+      <ChessGameUI />
+    </div>
   </React.StrictMode>,
   document.getElementById('root')
 );

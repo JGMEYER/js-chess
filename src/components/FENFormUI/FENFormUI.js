@@ -68,8 +68,8 @@ class FENFormUI extends React.Component {
                         className="fen-input"
                         name="fen-input"
                         type="text"
-                        size="87"
-                        maxLength="87"
+                        size="70" /* max fen: 87 */
+                        maxLength="70" /* max fen: 87 */
                         value={this.state.fenCode}
                         onChange={this.handleChange}
                     >
