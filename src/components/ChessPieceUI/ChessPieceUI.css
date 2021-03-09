@@ -17,7 +17,7 @@
     text-shadow: 0 0 3px #fff;
 }
 
-.chess-piece:hover {
+.chess-piece.playable:hover {
     box-sizing: border-box;
     box-shadow: inset 0px 0px 0px 2px green;
 }

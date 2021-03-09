@@ -23,6 +23,9 @@ class ChessPieceUI extends React.Component {
      */
     render() {
         let className = "chess-piece";
+        if (this.props.isPlayable) {
+            className += " playable";
+        }
         if (this.props.piece.color === Color.WHITE) {
             className += " white";
         }
@@ -46,6 +49,7 @@ class ChessPieceUI extends React.Component {
 
 ChessPieceUI.propTypes = {
     piece: PropTypes.object.isRequired,
+    isPlayable: PropTypes.bool.isRequired, /* piece belongs to current player */
     isInCheck: PropTypes.bool.isRequired,
     selectPiece: PropTypes.func.isRequired,
 }

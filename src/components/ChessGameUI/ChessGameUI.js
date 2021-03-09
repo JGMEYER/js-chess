@@ -223,6 +223,10 @@ class ChessGameUI extends React.Component {
                             <ChessPieceUI
                                 key={`chess-piece${piece.id}`}
                                 piece={piece}
+                                isPlayable={
+                                    !this.state.chessBoardHistory.isInPast
+                                    && piece.color === this.state.chessBoardState.currentPlayer
+                                }
                                 isInCheck={
                                     piece instanceof King
                                     && this.state.chessBoardState.kingInCheck(piece.color)
