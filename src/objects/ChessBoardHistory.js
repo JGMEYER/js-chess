@@ -6,17 +6,25 @@ class ChessBoardHistory {
     }
 
     /**
-     * Add FEN str to the history.
-     * @param {string} fenStr
+     * Get FEN str at current position in history.
+     * @returns
      */
-    push(fenStr) {
-        if (!typeof fenStr === 'string') {
+    get() {
+        return this.history[this.idx];
+    }
+
+    /**
+     * Add FEN code to the history.
+     * @param {string} fenCode
+     */
+    push(fenCode) {
+        if (!typeof fenCode === 'string') {
             throw new Error('Expecting FEN string');
         }
         if (this.isInPast) {
             throw new Error('Cannot add to history while in the past.');
         } else {
-            this.history.push(fenStr);
+            this.history.push(fenCode);
             this.idx++;
         }
     }
@@ -27,8 +35,9 @@ class ChessBoardHistory {
     back() {
         if (this.idx > 0) {
             this.idx--;
+            this.isInPast = true;
         }
-        this.isInPast = true;
+        return this.history[this.idx];
     }
 
     /**
@@ -41,6 +50,7 @@ class ChessBoardHistory {
         if (this.idx === this.history.length - 1) {
             this.isInPast = false;
         }
+        return this.history[this.idx];
     }
 
     /**
@@ -49,6 +59,7 @@ class ChessBoardHistory {
     toStart() {
         this.idx = 0;
         this.isInPast = true;
+        return this.history[this.idx];
     }
 
     /**
@@ -57,6 +68,7 @@ class ChessBoardHistory {
     toEnd() {
         this.idx = this.history.length - 1;
         this.isInPast = false;
+        return this.history[this.idx];
     }
 }
 

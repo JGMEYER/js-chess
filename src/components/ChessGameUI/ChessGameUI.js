@@ -11,6 +11,8 @@ import ChessPiece from '../../objects/ChessPiece';
 import King from '../../objects/King';
 import Stockfish from '../../objects/Stockfish';
 import Color from '../../utils/color';
+import HistoryControlUI from '../HistoryControlUI/HistoryControlUI';
+import ChessBoardHistory from '../../objects/ChessBoardHistory';
 
 class ChessGameUI extends React.Component {
 
@@ -19,11 +21,14 @@ class ChessGameUI extends React.Component {
 
         const chessBoardState = new ChessBoardState();
         chessBoardState.reset();
+        const chessBoardHistory = new ChessBoardHistory();
+        chessBoardHistory.push(chessBoardState.toFEN());
 
         const stockfish = new Stockfish();
 
         this.state = {
             chessBoardState: chessBoardState,
+            chessBoardHistory: chessBoardHistory,
             selectedPiece: null,
             whitePiecesCaptured: [],
             blackPiecesCaptured: [],
@@ -35,6 +40,10 @@ class ChessGameUI extends React.Component {
         this.selectPiece = this.selectPiece.bind(this);
         this.movePiece = this.movePiece.bind(this);
         this.updateBoard = this.updateBoard.bind(this);
+        this.historyToStart = this.historyToStart.bind(this);
+        this.historyBack = this.historyBack.bind(this);
+        this.historyForward = this.historyForward.bind(this);
+        this.historyToEnd = this.historyToEnd.bind(this);
     }
 
     /**
@@ -76,6 +85,11 @@ class ChessGameUI extends React.Component {
      * @param {ChessPiece} piece
      */
     selectPiece(piece) {
+        if (this.state.chessBoardHistory.isInPast) {
+            console.log('Cannot select pieces while in the past');
+            return;
+        }
+
         if (piece === this.state.selectedPiece) {
             // Deselect piece
             this.setState(prev => ({
@@ -105,6 +119,10 @@ class ChessGameUI extends React.Component {
             console.log('No piece selected');
             return;
         }
+        if (this.state.chessBoardHistory.isInPast) {
+            console.log('Cannot move pieces while in the past');
+            return;
+        }
 
         const validMoves = this.state.selectedPiece.validMoves(
             this.state.chessBoardState
@@ -113,6 +131,7 @@ class ChessGameUI extends React.Component {
             const [toR, toC] = move.toToRowCol();
             return toR === row && toC === col
         })[0];
+
         if (move) {
             const pieceCaptured = this.state.chessBoardState.move(move);
             if (pieceCaptured) {
@@ -122,6 +141,9 @@ class ChessGameUI extends React.Component {
                     this.state.blackPiecesCaptured.push(pieceCaptured);
                 }
             }
+
+            const newFEN = this.state.chessBoardState.toFEN();
+            this.state.chessBoardHistory.push(newFEN);
         } else {
             console.log('Invalid move');
         }
@@ -145,6 +167,46 @@ class ChessGameUI extends React.Component {
             ...prev,
             chessBoardState: newChessBoardState,
         }));
+    }
+
+    /**
+     * Move history to start.
+     */
+    historyToStart() {
+        const fenCode = this.state.chessBoardHistory.toStart();
+        console.log('to start');
+        console.log(this.state.chessBoardHistory);
+        this.updateBoard(fenCode);
+    }
+
+    /**
+     * Move history back a step.
+     */
+    historyBack() {
+        const fenCode = this.state.chessBoardHistory.back();
+        console.log('back');
+        console.log(this.state.chessBoardHistory);
+        this.updateBoard(fenCode);
+    }
+
+    /**
+     * Move history forward a step.
+     */
+    historyForward() {
+        const fenCode = this.state.chessBoardHistory.forward();
+        console.log('forward');
+        console.log(this.state.chessBoardHistory);
+        this.updateBoard(fenCode);
+    }
+
+    /**
+     * Move history to end.
+     */
+    historyToEnd() {
+        const fenCode = this.state.chessBoardHistory.toEnd();
+        console.log('to end');
+        console.log(this.state.chessBoardHistory);
+        this.updateBoard(fenCode);
     }
 
     /**
@@ -179,6 +241,14 @@ class ChessGameUI extends React.Component {
                     </div>
                     <div className="chess-board-ui-sidebar">
                         <CapturedPiecesUI piecesCaptured={this.state.whitePiecesCaptured}></CapturedPiecesUI>
+                        <HistoryControlUI
+                            isInPast={this.state.chessBoardHistory.isInPast}
+                            toStart={this.historyToStart}
+                            back={this.historyBack}
+                            forward={this.historyForward}
+                            toEnd={this.historyToEnd}
+                        >
+                        </HistoryControlUI>
                         <CapturedPiecesUI piecesCaptured={this.state.blackPiecesCaptured}></CapturedPiecesUI>
                     </div>
                 </div>
